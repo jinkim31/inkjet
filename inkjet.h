@@ -79,7 +79,7 @@ namespace InkJet
         colors[ImGuiCol_WindowBg]               = white;
         colors[ImGuiCol_ChildBg]                = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
         colors[ImGuiCol_PopupBg]                = ImVec4(1.00f, 1.00f, 1.00f, 0.98f);
-        colors[ImGuiCol_Border]                 = ImVec4(0.00f, 0.00f, 0.00f, 0.30f);
+        colors[ImGuiCol_Border]                 = colorRGBA(240, 242, 249, 255);
         colors[ImGuiCol_BorderShadow]           = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
         colors[ImGuiCol_FrameBg]                = colorRGBA(220, 220, 220, 70);
         colors[ImGuiCol_FrameBgHovered]         = colorRGBA(220, 220, 220, 120);
