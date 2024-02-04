@@ -93,7 +93,7 @@ namespace InkJet
         colors[ImGuiCol_ScrollbarGrabHovered]   = ImVec4(0.49f, 0.49f, 0.49f, 0.80f);
         colors[ImGuiCol_ScrollbarGrabActive]    = ImVec4(0.49f, 0.49f, 0.49f, 1.00f);
         colors[ImGuiCol_CheckMark]              = colorRGB(34, 34, 34);
-        colors[ImGuiCol_SliderGrab]             = ImVec4(0.26f, 0.59f, 0.98f, 0.78f);
+        colors[ImGuiCol_SliderGrab]             = colorRGB(34, 34, 34);
         colors[ImGuiCol_SliderGrabActive]       = ImVec4(0.46f, 0.54f, 0.80f, 0.60f);
         colors[ImGuiCol_Button]                 = colorRGBA(220, 220, 220, 70);
         colors[ImGuiCol_ButtonHovered]          = colorRGBA(220, 220, 220, 120);
@@ -132,8 +132,8 @@ namespace InkJet
 
         style->WindowMenuButtonPosition = ImGuiDir_None;
         style->WindowPadding = {16, 16};
-        style->FramePadding = {8, 8};
-        style->ItemSpacing = {8, 8};
+        style->FramePadding = {4, 4};
+        style->ItemSpacing = {12, 12};
         style->ItemInnerSpacing = {4, 4};
         style->WindowBorderSize = 0;
     }
@@ -169,16 +169,6 @@ namespace InkJet
 
     static void End()
     {
-        // draw tab underline
-        /*
-        auto window = ImGui::GetCurrentWindow();
-        auto draw_list = window->DrawList;
-        bool tabActive = window != nullptr && !window->Hidden;
-        draw_list->AddRectFilled(
-                {window->DockTabItemRect.Min.x, window->DockTabItemRect.Max.y+4},
-                {window->DockTabItemRect.Max.x - (tabActive ? 16.0f : 0) , window->DockTabItemRect.Max.y}, 0xFF000000);
-        */
-
         // pop body font
         ImGui::PopFont();
 
@@ -193,8 +183,10 @@ namespace InkJet
     static void initFont()
     {
         auto& io = ImGui::GetIO();
+        ImFontConfig config;
+        config.GlyphOffset = {0, -5};
         fonts.insert({"body", io.Fonts->AddFontFromFileTTF("../Resources/assets/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf", 32.0f, NULL, io.Fonts->GetGlyphRangesDefault())});
-        fonts.insert({"heading", io.Fonts->AddFontFromFileTTF("../Resources/assets/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf", 46.0f, NULL, io.Fonts->GetGlyphRangesDefault())});
+        fonts.insert({"heading", io.Fonts->AddFontFromFileTTF("../Resources/assets/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf", 46.0f, &config, io.Fonts->GetGlyphRangesDefault())});
     }
 };
 #endif

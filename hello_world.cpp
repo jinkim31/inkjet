@@ -1,4 +1,5 @@
 #include "inkjet.h"
+#include <implot/implot.h>
 
 void Gui()
 {
@@ -21,22 +22,13 @@ void Gui()
 
     InkJet::NavBar();
 
-    ImGui::Button("asdf");
+    ImGui::Button("NavBar Button");
 
     InkJet::DockSpace();
 
     ImGui::ShowDemoWindow();
 
-    static bool openApple = true;
-    InkJet::Begin("Apple", &openApple);
-    InkJet::End();
-
-    InkJet::Begin("Banana", &openApple);
-    ImGui::Button("Banana");
-    InkJet::End();
-
-    InkJet::Begin("Cherry", &openApple);
-    InkJet::End();
+    ImPlot::ShowDemoWindow();
 
     InkJet::EndMainWindow();
 }
@@ -50,6 +42,7 @@ int main(int , char *[])
     runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::NoDefaultWindow;
     runnerParams.callbacks.LoadAdditionalFonts = InkJet::initFont;
     runnerParams.imGuiWindowParams.enableViewports = true;
+    runnerParams.fpsIdling.enableIdling = false;
     ImmApp::AddOnsParams addOnsParams;
     addOnsParams.withMarkdown = true;
     addOnsParams.withImplot = true;
