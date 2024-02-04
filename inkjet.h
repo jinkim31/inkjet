@@ -12,7 +12,7 @@ namespace InkJet
     static ImVec4 colorRGB(uint8_t r, uint8_t g, uint8_t b){ return {r/255.0f, g/255.0f, b/255.0f, 1.0f}; }
     static ImVec4 colorRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a){ return {r/255.0f, g/255.0f, b/255.0f, a/255.0f}; }
     static const ImVec4 white = colorRGB(255, 255, 255);
-    static const ImVec4 background = colorRGB(248, 248, 248);
+    static const ImVec4 background = colorRGB(250, 250, 250);
     static std::map<std::string, ImFont*> fonts;
 
     static void BeginMainWindow()
@@ -45,7 +45,7 @@ namespace InkJet
         draw_list->AddLine(
                 ImGui::GetCursorScreenPos() + ImVec2(0, height-1),
                 ImGui::GetCursorScreenPos() + ImVec2(ImGui::GetContentRegionAvail().x, height-1),
-                IM_COL32(241, 243, 250, 255));
+                IM_COL32(240, 242, 249, 255));
         ImGui::Dummy({0, 0}); ImGui::SameLine();
     }
     static void DockSpace()
@@ -74,16 +74,16 @@ namespace InkJet
         ImVec4* colors = style->Colors;
 
 
-        colors[ImGuiCol_Text]                   = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+        colors[ImGuiCol_Text]                   = colorRGB(34, 34, 34);
         colors[ImGuiCol_TextDisabled]           = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
         colors[ImGuiCol_WindowBg]               = white;
         colors[ImGuiCol_ChildBg]                = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
         colors[ImGuiCol_PopupBg]                = ImVec4(1.00f, 1.00f, 1.00f, 0.98f);
         colors[ImGuiCol_Border]                 = ImVec4(0.00f, 0.00f, 0.00f, 0.30f);
         colors[ImGuiCol_BorderShadow]           = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-        colors[ImGuiCol_FrameBg]                = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
-        colors[ImGuiCol_FrameBgHovered]         = ImVec4(0.26f, 0.59f, 0.98f, 0.40f);
-        colors[ImGuiCol_FrameBgActive]          = ImVec4(0.26f, 0.59f, 0.98f, 0.67f);
+        colors[ImGuiCol_FrameBg]                = colorRGBA(220, 220, 220, 70);
+        colors[ImGuiCol_FrameBgHovered]         = colorRGBA(220, 220, 220, 120);
+        colors[ImGuiCol_FrameBgActive]          = colorRGBA(220, 220, 220, 170);
         colors[ImGuiCol_TitleBg]                = white;
         colors[ImGuiCol_TitleBgActive]          = white;
         colors[ImGuiCol_TitleBgCollapsed]       = ImVec4(1.00f, 1.00f, 1.00f, 0.51f);
@@ -92,7 +92,7 @@ namespace InkJet
         colors[ImGuiCol_ScrollbarGrab]          = ImVec4(0.69f, 0.69f, 0.69f, 0.80f);
         colors[ImGuiCol_ScrollbarGrabHovered]   = ImVec4(0.49f, 0.49f, 0.49f, 0.80f);
         colors[ImGuiCol_ScrollbarGrabActive]    = ImVec4(0.49f, 0.49f, 0.49f, 1.00f);
-        colors[ImGuiCol_CheckMark]              = colorRGB(0, 0, 0);
+        colors[ImGuiCol_CheckMark]              = colorRGB(34, 34, 34);
         colors[ImGuiCol_SliderGrab]             = ImVec4(0.26f, 0.59f, 0.98f, 0.78f);
         colors[ImGuiCol_SliderGrabActive]       = ImVec4(0.46f, 0.54f, 0.80f, 0.60f);
         colors[ImGuiCol_Button]                 = colorRGBA(220, 220, 220, 70);
@@ -101,9 +101,9 @@ namespace InkJet
         colors[ImGuiCol_Header]                 = colorRGBA(220, 220, 220, 70);
         colors[ImGuiCol_HeaderHovered]          = colorRGBA(220, 220, 220, 120);
         colors[ImGuiCol_HeaderActive]           = colorRGBA(220, 220, 220, 170);
-        colors[ImGuiCol_Separator]              = ImVec4(0.39f, 0.39f, 0.39f, 0.62f);
-        colors[ImGuiCol_SeparatorHovered]       = ImVec4(0.14f, 0.44f, 0.80f, 0.78f);
-        colors[ImGuiCol_SeparatorActive]        = ImVec4(0.14f, 0.44f, 0.80f, 1.00f);
+        colors[ImGuiCol_Separator]              = colorRGBA(220, 220, 220, 70);
+        colors[ImGuiCol_SeparatorHovered]       = colorRGBA(220, 220, 220, 120);
+        colors[ImGuiCol_SeparatorActive]        = colorRGBA(220, 220, 220, 150);
         colors[ImGuiCol_ResizeGrip]             = ImVec4(0.35f, 0.35f, 0.35f, 0.17f);
         colors[ImGuiCol_ResizeGripHovered]      = ImVec4(0.26f, 0.59f, 0.98f, 0.67f);
         colors[ImGuiCol_ResizeGripActive]       = ImVec4(0.26f, 0.59f, 0.98f, 0.95f);
