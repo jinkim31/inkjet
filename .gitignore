@@ -1,5 +1,4 @@
 build*/
 cmake-build*/
-external/
 cmake-build-debug
 .idea

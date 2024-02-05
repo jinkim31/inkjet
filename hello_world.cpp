@@ -5,7 +5,10 @@ void Gui()
 {
     InkJet::BeginMainWindow();
 
-    if (ImGui::BeginMainMenuBar()) {
+    // menu child
+    ImGui::PushStyleColor(ImGuiCol_MenuBarBg, InkJet::panel);
+    ImGui::BeginChild("MenuChild", {300, ImGui::GetFrameHeight()}, ImGuiChildFlags_None, ImGuiWindowFlags_MenuBar);
+    if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Create")) {
             }
@@ -17,18 +20,66 @@ void Gui()
             }
             ImGui::EndMenu();
         }
-        ImGui::EndMainMenuBar();
+        if (ImGui::BeginMenu("Edit")) {
+            if (ImGui::MenuItem("Dummy")) {}
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("View")) {
+            if (ImGui::MenuItem("Dummy")) {}
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMenuBar();
     }
+    ImGui::EndChild();
+    ImGui::PopStyleColor();
 
-    InkJet::NavBar();
+    // same line in between
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
+    ImGui::SameLine();
+    ImGui::PopStyleVar();
 
-    ImGui::Button("NavBar Button");
+    // utility child
+    ImGui::PushStyleColor(ImGuiCol_ChildBg, InkJet::panel);
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
+    ImGui::BeginChild("UtilityChild", {0, ImGui::GetFrameHeight()}, ImGuiChildFlags_None, ImGuiWindowFlags_None);
 
+    ImGui::PushStyleColor(ImGuiCol_Button, InkJet::colorRGBA(0, 0, 0, 0));
+    ImGui::PushStyleColor(ImGuiCol_Text, InkJet::colorRGB(76, 175, 80));
+    ImGui::Button(ICON_MD_PLAY_ARROW"##UtilityButton"); ImGui::SameLine();
+    ImGui::PopStyleColor(2);
+
+    // utility widgets
+    char buffer[100] = "Hello World";
+    InkJet::InputText("##UtillityText", buffer, 100); ImGui::SameLine();
+
+    // utility child end and line
+    ImGui::EndChild();
+    InkJet::HLine();
+    ImGui::PopStyleColor();
+    ImGui::PopStyleVar();
+
+    // dockspace
     InkJet::DockSpace();
 
-    ImGui::ShowDemoWindow();
+    bool open = true;
+    InkJet::Begin(ICON_MD_FOLDER_OPEN" Explorer");
+    InkJet::End();
+    InkJet::Begin(ICON_MD_INSERT_DRIVE_FILE" main.cpp", &open);
+    InkJet::End();
+    InkJet::Begin(ICON_MD_INSERT_DRIVE_FILE" main.h", &open);
+    InkJet::End();
+    InkJet::Begin(ICON_MD_INSERT_DRIVE_FILE" lib.c", &open);
+    InkJet::End();
+    InkJet::Begin(ICON_MD_INSERT_DRIVE_FILE" lib.h", &open);
+    InkJet::End();
+    InkJet::Begin(ICON_MD_TERMINAL" Terminal");
+    InkJet::End();
+    InkJet::Begin(ICON_MD_COMMIT" Git", &open);
+    InkJet::End();
 
-    ImPlot::ShowDemoWindow();
+    //®ImGui::ShowDemoWindow();
+    //ImPlot::ShowDemoWindow();
 
     InkJet::EndMainWindow();
 }

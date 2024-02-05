@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(imgui_bundle_example_integration)
+project(inkjet)
 set(CMAKE_CXX_STANDARD 17)
 
 
@@ -24,8 +24,8 @@ endif()
 
 # Build your app
 # ==============
-imgui_bundle_add_app(imgui_bundle_example_integration hello_world.cpp inkjet.cpp)
-
+imgui_bundle_add_app(inkjet hello_world.cpp inkjet.cpp)
+target_include_directories(inkjet PRIVATE external/IconFontCppHeaders)
 # imgui_bundle_add_app is a helper function, similar to cmake's "add_executable"
 # Usage:
 # imgui_bundle_add_app(app_name file1.cpp file2.cpp ...)
