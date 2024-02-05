@@ -75,10 +75,19 @@ void Gui()
     InkJet::End();
     InkJet::Begin(ICON_MD_TERMINAL" Terminal");
     InkJet::End();
-    InkJet::Begin(ICON_MD_COMMIT" Git", &open);
+    InkJet::Begin(ICON_MD_BAR_CHART" Plot", &open);
+        ImGui::PushStyleColor(ImGuiCol_FrameBg, InkJet::white);
+        if(ImPlot::BeginPlot("Plot", ImGui::GetContentRegionAvail()))
+            ImPlot::EndPlot();
+        ImGui::PopStyleColor();
     InkJet::End();
 
-    //®ImGui::ShowDemoWindow();
+    InkJet::Begin(ICON_MD_COLOR_LENS" ImGui Style Editor");
+        ImGui::ShowStyleEditor();
+    InkJet::End();
+    InkJet::Begin(ICON_MD_COLOR_LENS" ImPlot Style Editor");
+        ImPlot::ShowStyleEditor();
+    InkJet::End();
     //ImPlot::ShowDemoWindow();
 
     InkJet::EndMainWindow();
