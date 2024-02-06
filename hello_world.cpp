@@ -40,27 +40,32 @@ void Gui()
     ImGui::PopStyleVar();
 
     // utility child
-    ImGui::PushStyleColor(ImGuiCol_ChildBg, InkJet::panel);
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
     ImGui::BeginChild("UtilityChild", {0, ImGui::GetFrameHeight()}, ImGuiChildFlags_None, ImGuiWindowFlags_None);
 
-    ImGui::PushStyleColor(ImGuiCol_Button, InkJet::colorRGBA(0, 0, 0, 0));
     ImGui::PushStyleColor(ImGuiCol_Text, InkJet::colorRGB(76, 175, 80));
-    ImGui::Button(ICON_MD_PLAY_ARROW"##UtilityButton"); ImGui::SameLine();
-    ImGui::PopStyleColor(2);
+    InkJet::TransparentButton(ICON_MD_PLAY_ARROW"##UtilityButton"); ImGui::SameLine();
+    ImGui::PopStyleColor();
 
     // utility widgets
-    char buffer[100] = "Hello World";
-    InkJet::InputText("##UtillityText", buffer, 100); ImGui::SameLine();
+    char buffer[100] = "";
+    InkJet::InputText("##UtillityText", "Utility Text", buffer, 100); ImGui::SameLine();
 
     // utility child end and line
     ImGui::EndChild();
     InkJet::HLine();
-    ImGui::PopStyleColor();
     ImGui::PopStyleVar();
 
     // dockspace
     InkJet::DockSpace();
+
+    // status bar
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
+    InkJet::HLine();
+    ImGui::BeginChild("StatusBarChild");
+    InkJet::TransparentButton("Status Bar Button");
+    ImGui::EndChild();
+    ImGui::PopStyleVar();
 
     bool open = true;
     InkJet::Begin(ICON_MD_FOLDER_OPEN" Explorer");
@@ -75,12 +80,15 @@ void Gui()
     InkJet::End();
     InkJet::Begin(ICON_MD_TERMINAL" Terminal");
     InkJet::End();
+
+    //ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {2,2});
     InkJet::Begin(ICON_MD_BAR_CHART" Plot", &open);
         ImGui::PushStyleColor(ImGuiCol_FrameBg, InkJet::white);
         if(ImPlot::BeginPlot("Plot", ImGui::GetContentRegionAvail()))
             ImPlot::EndPlot();
         ImGui::PopStyleColor();
     InkJet::End();
+    //ImGui::PopStyleVar();
 
     InkJet::Begin(ICON_MD_COLOR_LENS" ImGui Style Editor");
         ImGui::ShowStyleEditor();

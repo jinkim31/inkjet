@@ -58,7 +58,7 @@ namespace InkJet
         ImGui::Dummy({1, 0});
     }
 
-    static void DockSpace()
+    static void DockSpace(bool leaveSpaceForStatusBar = true)
     {
         const int padding = 0;
         const int dockSpacing = 1;
@@ -70,9 +70,9 @@ namespace InkJet
         ImGui::Dummy({0, padding});
         ImGui::Dummy({padding, 0});
         ImGui::SameLine();
-        ImGui::DockSpace(ImGui::GetID("MainDockSpace"), ImVec2(-padding, -padding),
-                         ImGuiDockNodeFlags_PassthruCentralNode |
-                         ImGuiDockNodeFlags_NoCloseButton);
+        ImGui::DockSpace(ImGui::GetID("MainDockSpace"),
+                         ImVec2(-padding, -padding - (leaveSpaceForStatusBar ? ImGui::GetFrameHeight()+1 : 0)),
+                         ImGuiDockNodeFlags_PassthruCentralNode|ImGuiDockNodeFlags_NoCloseButton);
         ImGui::PopStyleVar(3);
         ImGui::PopStyleColor(2);
     }
@@ -86,7 +86,7 @@ namespace InkJet
         colors[ImGuiCol_Text]                   = colorRGB(34, 34, 34);
         colors[ImGuiCol_TextDisabled]           = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
         colors[ImGuiCol_WindowBg]               = white;
-        colors[ImGuiCol_ChildBg]                = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+        colors[ImGuiCol_ChildBg]                = panel;
         colors[ImGuiCol_PopupBg]                = ImVec4(1.00f, 1.00f, 1.00f, 0.98f);
         colors[ImGuiCol_Border]                 = colorRGBA(228, 228, 228, 255);
         colors[ImGuiCol_BorderShadow]           = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
@@ -102,8 +102,8 @@ namespace InkJet
         colors[ImGuiCol_ScrollbarGrabHovered]   = ImVec4(0.49f, 0.49f, 0.49f, 0.80f);
         colors[ImGuiCol_ScrollbarGrabActive]    = ImVec4(0.49f, 0.49f, 0.49f, 1.00f);
         colors[ImGuiCol_CheckMark]              = colorRGB(34, 34, 34);
-        colors[ImGuiCol_SliderGrab]             = colorRGB(34, 34, 34);
-        colors[ImGuiCol_SliderGrabActive]       = ImVec4(0.46f, 0.54f, 0.80f, 0.60f);
+        colors[ImGuiCol_SliderGrab]             = colorRGB(170, 170, 170);
+        colors[ImGuiCol_SliderGrabActive]       = highlight;
         colors[ImGuiCol_Button]                 = colorRGBA(220, 220, 220, 70);
         colors[ImGuiCol_ButtonHovered]          = colorRGBA(220, 220, 220, 120);
         colors[ImGuiCol_ButtonActive]           = colorRGBA(220, 220, 220, 170);
@@ -140,20 +140,32 @@ namespace InkJet
         colors[ImGuiCol_ModalWindowDimBg]       = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
 
         style->WindowMenuButtonPosition = ImGuiDir_Right;
-        style->WindowPadding = {16, 16};
+        style->WindowPadding = {16, 8};
         style->FramePadding = {8, 8};
         style->ItemSpacing = {12, 12};
         style->ItemInnerSpacing = {4, 4};
         style->WindowBorderSize = 0;
     }
 
+    static bool TransparentButton(const char* name)
+    {
+        ImGui::PushStyleColor(ImGuiCol_Button, InkJet::colorRGBA(0, 0, 0, 0));
+        bool ret = ImGui::Button(name);
+        ImGui::PopStyleColor();
+        return ret;
+    }
+
     static void Begin(const char* name, bool* open=NULL)
     {
-        // set title color if inactive
+        // check tab active
         ImGuiWindow* window = ImGui::FindWindowByName(name);
         bool isActive = window != nullptr && !window->Hidden;
 
-        ImGui::PushStyleColor(ImGuiCol_Text, isActive ? highlight : textSubtitle);
+        // check tab hover
+        bool isHovering = window != nullptr && ImGui::IsMouseHoveringRect(window->DockTabItemRect.Min, window->DockTabItemRect.Max);
+
+
+        ImGui::PushStyleColor(ImGuiCol_Text, isActive ? highlight : (isHovering ? ImGui::GetStyleColorVec4(ImGuiCol_Text) : textSubtitle));
 
         // begin window
         ImGuiWindowFlags window_flags =  ImGuiWindowFlags_None;
@@ -199,11 +211,11 @@ namespace InkJet
         io.Fonts->AddFontFromFileTTF( "../Resources/assets/fonts/MaterialIcons-Regular.ttf", iconFontSize, &icons_config, icons_ranges );
     }
 
-    static bool InputText(const char *label, char *buf, size_t buf_size, ImGuiInputTextFlags flags = 0)
+    static bool InputText(const char *label, const char* hint, char *buf, size_t buf_size, ImGuiInputTextFlags flags = 0)
     {
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0);
         ImGui::PushStyleColor(ImGuiCol_FrameBg, InkJet::white);
-        bool ret = ImGui::InputText(label, buf, buf_size, flags);
+        bool ret = ImGui::InputTextWithHint(label, hint, buf, buf_size, flags);
         ImGui::PopStyleVar();
         ImGui::PopStyleColor();
         return ret;
