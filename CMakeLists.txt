@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(inkjet)
 set(CMAKE_CXX_STANDARD 17)
 
-
+set(HELLOIMGUI_DOWNLOAD_FREETYPE_IF_NEEDED ON)
 # Add imgui_bundle
 # =================
 # 1/  Option 1: if you added imgui_bundle in a subfolder, you can add it to your project with:

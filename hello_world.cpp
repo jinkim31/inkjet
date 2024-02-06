@@ -109,7 +109,7 @@ int main(int , char *[])
     runnerParams.callbacks.ShowGui = Gui;
     runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::NoDefaultWindow;
     runnerParams.callbacks.LoadAdditionalFonts = InkJet::initFont;
-    runnerParams.imGuiWindowParams.enableViewports = true;
+    runnerParams.imGuiWindowParams.enableViewports = false;
     runnerParams.fpsIdling.enableIdling = false;
     ImmApp::AddOnsParams addOnsParams;
     addOnsParams.withMarkdown = true;

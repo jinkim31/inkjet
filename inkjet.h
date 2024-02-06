@@ -193,22 +193,21 @@ namespace InkJet
 
     static void initFont()
     {
+        std::cout<<"Font"<<std::endl;
+        std::cout<<ImGui::GetIO().DisplayFramebufferScale.x<<std::endl;
         auto& io = ImGui::GetIO();
-        ImFontConfig config;
-        //config.GlyphOffset = {0, -5};
-        //io.Fonts->AddFontDefault();
-        fonts.insert({"body", io.Fonts->AddFontFromFileTTF("../Resources/assets/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf", 32.0f, NULL, io.Fonts->GetGlyphRangesDefault())});
-        //fonts.insert({"bold", io.Fonts->AddFontFromFileTTF("../Resources/assets/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf", 32.0f, NULL, io.Fonts->GetGlyphRangesDefault())});
 
-        float baseFontSize = 32.0f; // 13.0f is the size of the default font. Change to the font size you use.
+        float baseFontSize = 16.0f / io.DisplayFramebufferScale.x;
+        ImFontConfig config;
+        fonts.insert({"body", io.Fonts->AddFontFromFileTTF("assets/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf", baseFontSize, NULL, io.Fonts->GetGlyphRangesDefault())});
         float iconFontSize = baseFontSize * 1.1f; // FontAwesome fonts need to have their sizes reduced by 2.0f/3.0f in order to align correctly
         static const ImWchar icons_ranges[] = { ICON_MIN_MD, ICON_MAX_16_MD, 0 };
         ImFontConfig icons_config;
         icons_config.MergeMode = true;
         icons_config.PixelSnapH = true;
         icons_config.GlyphMinAdvanceX = iconFontSize;
-        icons_config.GlyphOffset = {0, 9};
-        io.Fonts->AddFontFromFileTTF( "../Resources/assets/fonts/MaterialIcons-Regular.ttf", iconFontSize, &icons_config, icons_ranges );
+        icons_config.GlyphOffset = {0, 4/ io.DisplayFramebufferScale.x};
+        io.Fonts->AddFontFromFileTTF( "assets/fonts/MaterialIcons-Regular.ttf", iconFontSize, &icons_config, icons_ranges );
     }
 
     static bool InputText(const char *label, const char* hint, char *buf, size_t buf_size, ImGuiInputTextFlags flags = 0)
