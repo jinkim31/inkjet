@@ -8,6 +8,15 @@
 #include "external/IconFontCppHeaders/IconsMaterialDesign.h"
 #include <unordered_map>
 
+#ifdef _WIN32
+#define INKJET_ASSET_PREFIX
+#elif __unix__
+#define INKJET_ASSET_PREFIX
+#elif __linux__
+#define INKJET_ASSET_PREFIX
+#elif __APPLE__
+#define INKJET_ASSET_PREFIX "../Resources/"
+#endif
 namespace InkJet
 {
     static ImVec4 colorRGB(uint8_t r, uint8_t g, uint8_t b){ return {r/255.0f, g/255.0f, b/255.0f, 1.0f}; }
@@ -197,7 +206,7 @@ namespace InkJet
 
         float baseFontSize = 16.0f * io.DisplayFramebufferScale.x;
         ImFontConfig config;
-        fonts.insert({"body", io.Fonts->AddFontFromFileTTF("../Resources/assets/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf", baseFontSize, NULL, io.Fonts->GetGlyphRangesDefault())});
+        fonts.insert({"body", io.Fonts->AddFontFromFileTTF(INKJET_ASSET_PREFIX"assets/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf", baseFontSize, NULL, io.Fonts->GetGlyphRangesDefault())});
         float iconFontSize = baseFontSize * 1.1f; // FontAwesome fonts need to have their sizes reduced by 2.0f/3.0f in order to align correctly
         static const ImWchar icons_ranges[] = { ICON_MIN_MD, ICON_MAX_16_MD, 0 };
         ImFontConfig icons_config;
@@ -205,7 +214,7 @@ namespace InkJet
         icons_config.PixelSnapH = true;
         icons_config.GlyphMinAdvanceX = iconFontSize;
         icons_config.GlyphOffset = {0, 4* io.DisplayFramebufferScale.x};
-        io.Fonts->AddFontFromFileTTF( "../Resources/assets/fonts/MaterialIcons-Regular.ttf", iconFontSize, &icons_config, icons_ranges );
+        io.Fonts->AddFontFromFileTTF( INKJET_ASSET_PREFIX"assets/fonts/MaterialIcons-Regular.ttf", iconFontSize, &icons_config, icons_ranges );
     }
 
     static bool InputText(const char *label, const char* hint, char *buf, size_t buf_size, ImGuiInputTextFlags flags = 0)
