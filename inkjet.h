@@ -1,6 +1,16 @@
 #ifndef INKJET_H_
 #define INKJET_H_
 
+#ifdef _WIN32
+#define INKJET_ASSET_PREFIX
+#elif __unix__
+#define INKJET_ASSET_PREFIX
+#elif __linux__
+#define INKJET_ASSET_PREFIX
+#elif __APPLE__
+#define INKJET_ASSET_PREFIX "../Resources/"
+#endif
+
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include "immapp/immapp.h"
