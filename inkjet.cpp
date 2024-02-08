@@ -334,10 +334,11 @@ void InkJet::SiglotConnectionGraphView()
             refresh = true;
         }ImGui::SameLine();
         bool home = TransparentButton(ICON_MD_HOME" Reset View"); ImGui::SameLine();
-        if(TransparentButton(ICON_MD_DOWNLOAD" Download Graph"))
+        if(TransparentButton(ICON_MD_DOWNLOAD" Save Graph"))
         {
             auto saveFile = pfd::save_file("Save Graph", "graph.png", { "*.png" });
-            cv::imwrite(saveFile.result(), connectionGraphImage);
+            if(!saveFile.result().empty())
+                cv::imwrite(saveFile.result(), connectionGraphImage);
         }
         ImageView("##imageView",connectionGraphImage, param, home, refresh);
         ImGui::PopStyleVar();
