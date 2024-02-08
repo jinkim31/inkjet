@@ -125,7 +125,7 @@ void InkJet::setStyle()
     style->FramePadding = {8, 8};
     style->ItemSpacing = {12, 12};
     style->ItemInnerSpacing = {4, 4};
-    style->WindowBorderSize = 1;
+    style->WindowBorderSize = 0;
     style->WindowRounding = 0;
 }
 
@@ -149,6 +149,9 @@ void InkJet::Begin(const char* name, bool* open)
 
     ImGui::PushStyleColor(ImGuiCol_Text, isActive ? highlight : (isHovering ? ImGui::GetStyleColorVec4(ImGuiCol_Text) : textSubtitle));
 
+    // zero window padding for tab border
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
+
     // begin window
     ImGuiWindowFlags window_flags =  ImGuiWindowFlags_None;
     ImGui::Begin(name, open, window_flags);
@@ -156,17 +159,45 @@ void InkJet::Begin(const char* name, bool* open)
     // pop inactive title color
     ImGui::PopStyleColor();
 
+    // tab border without spacing below
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0,0});
+    HLine();
+    ImGui::PopStyleVar();
+
+    // push child padding. -1 to compensate for the child window border(which is needed to get child window padding)
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {16-1, 16-1});
+
+    // push child window background color to be same as the window background
+    ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
+
+    // push child border color to be same as the window background
+    ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
+
+    // begin window child
+    ImGui::BeginChild("windowChild", ImGui::GetContentRegionAvail(), true);
+
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {4, 4});
 }
 
 void InkJet::End()
 {
+    // pop frame padding for tab spacing
     ImGui::PopStyleVar();
-    // pop body font
-    //ImGui::PopFont();
+
+    // end child
+    ImGui::EndChild();
+
+    // pop child background, border color
+    ImGui::PopStyleColor(2);
+
+    // pop child window padding
+    ImGui::PopStyleVar();
 
     // end window
     ImGui::End();
+
+    // pop window padding for tab border
+    ImGui::PopStyleVar();
 
     // pop title font
     //ImGui::PopFont();
@@ -281,7 +312,7 @@ void InkJet::ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, b
 
 void InkJet::SiglotConnectionGraphView()
 {
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, colorRGB(250, 250, 250));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, panel);
     InkJet::Begin(ICON_MD_HUB" Siglot Connection Graph");
     {
         static cv::Mat connectionGraphImage = cv::Mat::zeros(100, 100, CV_8UC1);
@@ -289,14 +320,14 @@ void InkJet::SiglotConnectionGraphView()
         bool refresh = false;
 
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {12, 0});
-        if (ImGui::Button(ICON_MD_HUB" Capture Connection Graph"))
+        if (TransparentButton(ICON_MD_HUB" Capture Connection Graph"))
         {
             Lookup::instance().dumpConnectionGraph("png", "ConnectionGraph.png");
             connectionGraphImage = cv::imread("ConnectionGraph.png");
             refresh = true;
         }
         ImGui::SameLine();
-        bool home = ImGui::Button(ICON_MD_HOME);
+        bool home = TransparentButton(ICON_MD_HOME);
         ImageView("##imageView",connectionGraphImage, param, home, refresh);
         ImGui::PopStyleVar();
     }InkJet::End();
