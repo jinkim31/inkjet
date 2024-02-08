@@ -1,4 +1,5 @@
 #include "inkjet.h"
+#include "portable_file_dialogs/portable_file_dialogs.h"
 
 void InkJet::BeginMainWindow()
 {
@@ -331,9 +332,13 @@ void InkJet::SiglotConnectionGraphView()
             siglot::Lookup::instance().dumpConnectionGraph("png", "ConnectionGraph.png");
             connectionGraphImage = cv::imread("ConnectionGraph.png");
             refresh = true;
+        }ImGui::SameLine();
+        bool home = TransparentButton(ICON_MD_HOME" Reset View"); ImGui::SameLine();
+        if(TransparentButton(ICON_MD_DOWNLOAD" Download Graph"))
+        {
+            auto saveFile = pfd::save_file("Save Graph", "graph.png", { "*.png" });
+            cv::imwrite(saveFile.result(), connectionGraphImage);
         }
-        ImGui::SameLine();
-        bool home = TransparentButton(ICON_MD_HOME" Reset View");
         ImageView("##imageView",connectionGraphImage, param, home, refresh);
         ImGui::PopStyleVar();
     }InkJet::End();
