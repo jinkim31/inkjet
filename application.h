@@ -3,14 +3,14 @@
 
 #include "inkjet.h"
 
-class Application : public Object
+class Application : public siglot::Object
 {
 public:
     Application();
     ~Application();
     void Render();
 private:
-    Thread mThread;
+    siglot::Thread mThread;
 };
 
 

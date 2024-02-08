@@ -328,7 +328,7 @@ void InkJet::SiglotConnectionGraphView()
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {12, 0});
         if (TransparentButton(ICON_MD_CAMERA))
         {
-            Lookup::instance().dumpConnectionGraph("png", "ConnectionGraph.png");
+            siglot::Lookup::instance().dumpConnectionGraph("png", "ConnectionGraph.png");
             connectionGraphImage = cv::imread("ConnectionGraph.png");
             refresh = true;
         }
