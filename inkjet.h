@@ -12,11 +12,17 @@
 #endif
 
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include "imgui.h"
-#include "immapp/immapp.h"
-#include "imgui_internal.h"
-#include "external/IconFontCppHeaders/IconsMaterialDesign.h"
+#include <imgui.h>
+#include <immapp/immapp.h>
+#include <imgui_internal.h>
+#include <implot/implot.h>
+#include <siglot/object.h>
+#include <siglot/thread.h>
+#include <siglot/lookup.h>
 #include <unordered_map>
+#include <immvision/image.h>
+#include <opencv2/opencv.hpp>
+#include "external/IconFontCppHeaders/IconsMaterialDesign.h"
 
 namespace InkJet
 {
@@ -52,6 +58,10 @@ bool TransparentButton(const char* name);
 void HLine();
 
 void VLine();
+
+void ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, bool home, bool refresh);
+
+void SiglotConnectionGraphView();
 
 };
 #endif

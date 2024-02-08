@@ -121,7 +121,7 @@ void InkJet::setStyle()
     colors[ImGuiCol_ModalWindowDimBg]       = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
 
     style->WindowMenuButtonPosition = ImGuiDir_Right;
-    style->WindowPadding = {16, 8};
+    style->WindowPadding = {16, 16};
     style->FramePadding = {8, 8};
     style->ItemSpacing = {12, 12};
     style->ItemInnerSpacing = {4, 4};
@@ -250,4 +250,55 @@ void InkJet::WidgetMenuBar()
     ImGui::EndChild();
     InkJet::HLine();
     ImGui::PopStyleVar();
+}
+
+void InkJet::ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, bool home, bool refresh)
+{
+    if(home)
+        param = ImmVision::ImageParams();
+
+
+    param.RefreshImage = refresh;
+    param.ShowZoomButtons = false;
+    param.ShowOptionsButton = false;
+    param.ShowSchoolPaperBackground = false;
+    param.ShowGrid = false;
+    param.ShowImageInfo = false;
+    param.ShowAlphaChannelCheckerboard = true;
+    param.ShowOptionsPanel = false;
+    param.DrawValuesOnZoomedPixels = false;
+    param.ShowOptionsInTooltip = false;
+    param.ShowPixelInfo = false;
+    param.ImageDisplaySize = cv::Size(
+            std::max(ImGui::GetContentRegionAvail().x, 20.0f),
+            std::max(ImGui::GetContentRegionAvail().y-16, 20.0f));
+
+    //ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
+    ImmVision::Image(name, mat, &param);
+    //ImGui::PopStyleVar();
+    param.RefreshImage = false;
+}
+
+void InkJet::SiglotConnectionGraphView()
+{
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, colorRGB(250, 250, 250));
+    InkJet::Begin(ICON_MD_HUB" Siglot Connection Graph");
+    {
+        static cv::Mat connectionGraphImage = cv::Mat::zeros(100, 100, CV_8UC1);
+        static ImmVision::ImageParams param;
+        bool refresh = false;
+
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {12, 0});
+        if (ImGui::Button(ICON_MD_HUB" Capture Connection Graph"))
+        {
+            Lookup::instance().dumpConnectionGraph("png", "ConnectionGraph.png");
+            connectionGraphImage = cv::imread("ConnectionGraph.png");
+            refresh = true;
+        }
+        ImGui::SameLine();
+        bool home = ImGui::Button(ICON_MD_HOME);
+        ImageView("##imageView",connectionGraphImage, param, home, refresh);
+        ImGui::PopStyleVar();
+    }InkJet::End();
+    ImGui::PopStyleColor();
 }

@@ -1,3 +1,6 @@
 [submodule "external/IconFontCppHeaders"]
 	path = external/IconFontCppHeaders
 	url = https://github.com/juliettef/IconFontCppHeaders.git
+[submodule "external/siglot"]
+	path = external/siglot
+	url = https://github.com/jinkim31/siglot.git
