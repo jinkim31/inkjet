@@ -326,14 +326,14 @@ void InkJet::SiglotConnectionGraphView()
         bool refresh = false;
 
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {12, 0});
-        if (TransparentButton(ICON_MD_CAMERA))
+        if (TransparentButton(ICON_MD_CAMERA" Capture"))
         {
             siglot::Lookup::instance().dumpConnectionGraph("png", "ConnectionGraph.png");
             connectionGraphImage = cv::imread("ConnectionGraph.png");
             refresh = true;
         }
         ImGui::SameLine();
-        bool home = TransparentButton(ICON_MD_HOME);
+        bool home = TransparentButton(ICON_MD_HOME" Reset View");
         ImageView("##imageView",connectionGraphImage, param, home, refresh);
         ImGui::PopStyleVar();
     }InkJet::End();
