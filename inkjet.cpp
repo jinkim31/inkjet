@@ -295,11 +295,10 @@ void InkJet::ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, b
     if(home)
         param = ImmVision::ImageParams();
 
-
     param.RefreshImage = refresh;
     param.ShowZoomButtons = false;
     param.ShowOptionsButton = false;
-    param.ShowSchoolPaperBackground = false;
+    param.ShowSchoolPaperBackground = true;
     param.ShowGrid = false;
     param.ShowImageInfo = false;
     param.ShowAlphaChannelCheckerboard = true;
@@ -320,9 +319,9 @@ void InkJet::ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, b
 void InkJet::SiglotConnectionGraphView()
 {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, panel);
-    InkJet::Begin(ICON_MD_HUB" Siglot Connection Graph");
+    InkJet::Begin(ICON_MD_HUB" Siglot Graph");
     {
-        static cv::Mat connectionGraphImage = cv::Mat::zeros(100, 100, CV_8UC1);
+        static cv::Mat connectionGraphImage = cv::Mat::ones(1000, 1000, CV_8UC1)*255;
         static ImmVision::ImageParams param;
         bool refresh = false;
 
