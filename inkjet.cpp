@@ -69,7 +69,7 @@ void InkJet::setStyle()
     colors[ImGuiCol_WindowBg]               = white;
     colors[ImGuiCol_ChildBg]                = panel;
     colors[ImGuiCol_PopupBg]                = ImVec4(1.00f, 1.00f, 1.00f, 0.98f);
-    colors[ImGuiCol_Border]                 = colorRGBA(228, 228, 228, 255);
+    colors[ImGuiCol_Border]                 = border;
     colors[ImGuiCol_BorderShadow]           = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
     colors[ImGuiCol_FrameBg]                = colorRGBA(220, 220, 220, 70);
     colors[ImGuiCol_FrameBgHovered]         = colorRGBA(220, 220, 220, 120);
@@ -121,7 +121,7 @@ void InkJet::setStyle()
     colors[ImGuiCol_ModalWindowDimBg]       = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
 
     style->WindowMenuButtonPosition = ImGuiDir_Right;
-    style->WindowPadding = {16, 16};
+    style->WindowPadding = {16, 8};
     style->FramePadding = {8, 8};
     style->ItemSpacing = {12, 12};
     style->ItemInnerSpacing = {4, 4};
@@ -165,7 +165,7 @@ void InkJet::Begin(const char* name, bool* open)
     ImGui::PopStyleVar();
 
     // push child padding. -1 to compensate for the child window border(which is needed to get child window padding)
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {16-1, 16-1});
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {16-1, 8-1});
 
     // push child window background color to be same as the window background
     ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
@@ -176,11 +176,17 @@ void InkJet::Begin(const char* name, bool* open)
     // begin window child
     ImGui::BeginChild("windowChild", ImGui::GetContentRegionAvail(), true);
 
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {4, 4});
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {6, 6});
+
+    // push regular border color for the user contents
+    ImGui::PushStyleColor(ImGuiCol_Border, border);
 }
 
 void InkJet::End()
 {
+    // pop regular border color
+    ImGui::PopStyleColor();
+
     // pop frame padding for tab spacing
     ImGui::PopStyleVar();
 
@@ -302,7 +308,7 @@ void InkJet::ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, b
     param.ShowPixelInfo = false;
     param.ImageDisplaySize = cv::Size(
             std::max(ImGui::GetContentRegionAvail().x, 20.0f),
-            std::max(ImGui::GetContentRegionAvail().y-16, 20.0f));
+            std::max(ImGui::GetContentRegionAvail().y-24, 20.0f));
 
     //ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
     ImmVision::Image(name, mat, &param);
@@ -320,7 +326,7 @@ void InkJet::SiglotConnectionGraphView()
         bool refresh = false;
 
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {12, 0});
-        if (TransparentButton(ICON_MD_HUB" Capture Connection Graph"))
+        if (TransparentButton(ICON_MD_CAMERA))
         {
             Lookup::instance().dumpConnectionGraph("png", "ConnectionGraph.png");
             connectionGraphImage = cv::imread("ConnectionGraph.png");

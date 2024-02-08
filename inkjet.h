@@ -33,6 +33,7 @@ static const ImVec4 background = colorRGB(250, 250, 250);
 static const ImVec4 panel = colorRGB(242, 242, 242);
 static const ImVec4 highlight = colorRGB(41, 98, 255);
 static const ImVec4 textSubtitle = colorRGB(85, 85, 85);
+static const ImVec4 border = colorRGB(211, 211, 211);
 static std::map<std::string, ImFont*> fonts;
 
 void BeginMainWindow();
