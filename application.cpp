@@ -6,6 +6,7 @@ Application::Application()
     this->setName("application");
     this->move(mThread);
     mObserver.move(mThread);
+    mObserver.start();
     connect(mObserver, SIGLOT(siglot::Observer::observed), *this, SIGLOT(Application::slot));
 
     HelloImGui::RunnerParams runnerParams;
