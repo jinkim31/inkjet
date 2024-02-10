@@ -166,7 +166,7 @@ void InkJet::Begin(const char* name, bool* open)
     ImGui::PopStyleVar();
 
     // push child padding. -1 to compensate for the child window border(which is needed to get child window padding)
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {16-1, 8-1});
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {16-1, 16-1});
 
     // push child window background color to be same as the window background
     ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
@@ -177,7 +177,7 @@ void InkJet::Begin(const char* name, bool* open)
     // begin window child
     ImGui::BeginChild("windowChild", ImGui::GetContentRegionAvail(), true);
 
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {6, 6});
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {4, 4});
 
     // push regular border color for the user contents
     ImGui::PushStyleColor(ImGuiCol_Border, border);
@@ -298,7 +298,7 @@ void InkJet::ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, b
     param.RefreshImage = refresh;
     param.ShowZoomButtons = false;
     param.ShowOptionsButton = false;
-    param.ShowSchoolPaperBackground = true;
+    param.ShowSchoolPaperBackground = false;
     param.ShowGrid = false;
     param.ShowImageInfo = false;
     param.ShowAlphaChannelCheckerboard = true;
@@ -323,22 +323,30 @@ void InkJet::SiglotConnectionGraphView()
     {
         static cv::Mat connectionGraphImage = cv::Mat::ones(1000, 1000, CV_8UC1)*255;
         static ImmVision::ImageParams param;
+        static bool showHiddenConnections = false;
+
         bool refresh = false;
 
-        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {12, 0});
         if (TransparentButton(ICON_MD_CAMERA" Capture"))
         {
-            siglot::Lookup::instance().dumpConnectionGraph("png", "ConnectionGraph.png");
+            siglot::Lookup::instance().dumpConnectionGraph("png", "ConnectionGraph.png", showHiddenConnections);
             connectionGraphImage = cv::imread("ConnectionGraph.png");
             refresh = true;
         }ImGui::SameLine();
-        bool home = TransparentButton(ICON_MD_HOME" Reset View"); ImGui::SameLine();
-        if(TransparentButton(ICON_MD_DOWNLOAD" Save Graph"))
+
+        bool home = TransparentButton(ICON_MD_HOME" Reset view"); ImGui::SameLine();
+        if(TransparentButton(ICON_MD_DOWNLOAD" Save graph"))
         {
             auto saveFile = pfd::save_file("Save Graph", "graph.png", { "*.png" });
             if(!saveFile.result().empty())
                 cv::imwrite(saveFile.result(), connectionGraphImage);
         }
+
+        ImGui::Checkbox("Capture hidden connections",  &showHiddenConnections);
+
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {12, 0});
+        ImGui::SameLine(); ImGui::Dummy({0,0});
+
         ImageView("##imageView",connectionGraphImage, param, home, refresh);
         ImGui::PopStyleVar();
     }InkJet::End();
