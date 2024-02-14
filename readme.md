@@ -1,5 +1,5 @@
 # InkJet
-A multithreaded immediate-mode GUI application template
+A multi-threaded application framework with an immediate-mode GUI
 
 ## Libraries Included
 - Dear ImGui Bundle
