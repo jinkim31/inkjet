@@ -10,7 +10,7 @@ void InkJet::BeginMainWindow()
     ImGui::PushStyleColor(ImGuiCol_WindowBg, background);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
-    ImGui::Begin("MAIN", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize);
+    ImGui::Begin("MAIN", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBringToFrontOnFocus);
     ImGui::PopStyleColor(1);
     ImGui::PopStyleVar(2);
 }
@@ -237,32 +237,13 @@ bool InkJet::InputText(const char *label, const char* hint, char *buf, size_t bu
     return ret;
 }
 
-void InkJet::WidgetMenuBar()
+void InkJet::WidgetMenuBar(const std::function<void()>& Menu, const std::function<void()>& Widget)
 {
     // menu child
     ImGui::PushStyleColor(ImGuiCol_MenuBarBg, InkJet::panel);
     ImGui::BeginChild("MenuChild", {300, ImGui::GetFrameHeight()}, ImGuiChildFlags_None, ImGuiWindowFlags_MenuBar);
     if (ImGui::BeginMenuBar()) {
-        if (ImGui::BeginMenu("File")) {
-            if (ImGui::MenuItem("Create")) {
-            }
-            if (ImGui::MenuItem("Open", "Ctrl+O")) {
-            }
-            if (ImGui::MenuItem("Save", "Ctrl+S")) {
-            }
-            if (ImGui::MenuItem("Save as..")) {
-            }
-            ImGui::EndMenu();
-        }
-        if (ImGui::BeginMenu("Edit")) {
-            if (ImGui::MenuItem("Dummy")) {}
-            ImGui::EndMenu();
-        }
-        if (ImGui::BeginMenu("View")) {
-            if (ImGui::MenuItem("Dummy")) {}
-            ImGui::EndMenu();
-        }
-
+        Menu();
         ImGui::EndMenuBar();
     }
     ImGui::EndChild();
@@ -277,12 +258,7 @@ void InkJet::WidgetMenuBar()
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
     ImGui::BeginChild("UtilityChild", {0, ImGui::GetFrameHeight()}, ImGuiChildFlags_None, ImGuiWindowFlags_None);
 
-    // utility widgets
-    ImGui::PushStyleColor(ImGuiCol_Text, InkJet::colorRGB(76, 175, 80));
-    InkJet::TransparentButton(ICON_MD_PLAY_ARROW"##UtilityButton"); ImGui::SameLine();
-    ImGui::PopStyleColor();
-    char buffer[100] = "";
-    InkJet::InputText("##UtillityText", "Utility Text", buffer, 100); ImGui::SameLine();
+    Widget();
 
     // utility child end and line
     ImGui::EndChild();

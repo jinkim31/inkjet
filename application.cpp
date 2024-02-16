@@ -39,7 +39,33 @@ void Application::Render()
     InkJet::BeginMainWindow();
 
     // menu bar
-    InkJet::WidgetMenuBar();
+    InkJet::WidgetMenuBar([]{
+        if (ImGui::BeginMenu("File")) {
+            if (ImGui::MenuItem("Create")) {
+            }
+            if (ImGui::MenuItem("Open", "Ctrl+O")) {
+            }
+            if (ImGui::MenuItem("Save", "Ctrl+S")) {
+            }
+            if (ImGui::MenuItem("Save as..")) {
+            }
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Edit")) {
+            if (ImGui::MenuItem("Dummy")) {}
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("View")) {
+            if (ImGui::MenuItem("Dummy")) {}
+            ImGui::EndMenu();
+        }
+    }, []{
+        ImGui::PushStyleColor(ImGuiCol_Text, InkJet::colorRGB(76, 175, 80));
+        InkJet::TransparentButton(ICON_MD_PLAY_ARROW"##UtilityButton"); ImGui::SameLine();
+        ImGui::PopStyleColor();
+        char buffer[100] = "";
+        InkJet::InputText("##UtillityText", "Utility Text", buffer, 100); ImGui::SameLine();
+    });
 
     // dockspace
     InkJet::DockSpace();
