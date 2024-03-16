@@ -10,10 +10,8 @@ public:
     Application();
     ~Application();
     void Render();
-    void SLOT slot();
 private:
     siglot::Thread mThread;
-    siglot::Observer mObserver;
 };
 
 

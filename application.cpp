@@ -5,16 +5,12 @@ Application::Application()
     mThread.setName("main thread");
     this->setName("application");
     this->move(mThread);
-    mObserver.move(mThread);
-    mObserver.start();
-    connect(mObserver, SIGLOT(siglot::Observer::observed), *this, SIGLOT(Application::slot));
 
     HelloImGui::RunnerParams runnerParams;
     runnerParams.callbacks.SetupImGuiStyle = InkJet::setStyle;
     runnerParams.callbacks.ShowGui = [&]{mThread.step(); Render();};
     runnerParams.callbacks.BeforeExit = [&]{
         this->remove();
-        mObserver.remove();
     };
     runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::NoDefaultWindow;
     runnerParams.callbacks.LoadAdditionalFonts = InkJet::initFont;

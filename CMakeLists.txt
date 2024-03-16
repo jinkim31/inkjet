@@ -13,7 +13,12 @@ if (NOT TARGET imgui_bundle)
     FetchContent_MakeAvailable(imgui_bundle)
 endif()
 
-imgui_bundle_add_app(${PROJECT_NAME} main.cpp inkjet.cpp application.cpp)
+imgui_bundle_add_app(${PROJECT_NAME}
+        main.cpp
+        inkjet.cpp
+        application.cpp
+        comm/serial/serial.cpp
+)
 target_include_directories(${PROJECT_NAME} PRIVATE external/IconFontCppHeaders)
 add_subdirectory(external/siglot)
 target_link_libraries(${PROJECT_NAME} PRIVATE siglot)
