@@ -6,7 +6,6 @@ set(HELLOIMGUI_DOWNLOAD_FREETYPE_IF_NEEDED ON)
 set(IMMVISION_FETCH_OPENCV ON)
 
 if (NOT TARGET imgui_bundle)
-    message(STATUS "Fetching imgui_bundle...")
     include(FetchContent)
     Set(FETCHCONTENT_QUIET FALSE)
     FetchContent_Declare(imgui_bundle GIT_REPOSITORY https://github.com/pthom/imgui_bundle.git GIT_TAG main)
@@ -14,12 +13,12 @@ if (NOT TARGET imgui_bundle)
 endif()
 
 imgui_bundle_add_app(${PROJECT_NAME}
-        main.cpp
-        inkjet.cpp
-        application.cpp
-        comm/serial/serial.cpp
+        example/main.cpp
+        inkjet/inkjet.cpp
+        example/application.cpp
+        inkjet/comm/serial/serial.cpp
 )
-target_include_directories(${PROJECT_NAME} PRIVATE external/IconFontCppHeaders)
+target_include_directories(${PROJECT_NAME} PRIVATE inkjet)
 add_subdirectory(external/siglot)
 target_link_libraries(${PROJECT_NAME} PRIVATE siglot)
 

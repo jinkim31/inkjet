@@ -2,5 +2,5 @@
 
 int main(int , char *[])
 {
-    Application entryPoint;
+    Application application;
 }

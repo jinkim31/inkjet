@@ -87,20 +87,6 @@ void Application::Render()
     ImGui::PopStyleColor();
     InkJet::End();
 
-    /*
-    InkJet::Begin(ICON_MD_COLOR_LENS" ImGui Style Editor");
-    ImGui::ShowStyleEditor();
-    InkJet::End();
-    InkJet::Begin(ICON_MD_COLOR_LENS" ImPlot Style Editor");
-    ImPlot::ShowStyleEditor();
-    InkJet::End();
-     */
-
     // end main
     InkJet::EndMainWindow();
-}
-
-void SLOT Application::slot()
-{
-
 }

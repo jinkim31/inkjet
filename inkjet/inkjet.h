@@ -22,7 +22,7 @@
 #include <unordered_map>
 #include <immvision/image.h>
 #include <opencv2/opencv.hpp>
-#include "external/IconFontCppHeaders/IconsMaterialDesign.h"
+#include "../external/IconFontCppHeaders/IconsMaterialDesign.h"
 
 namespace InkJet
 {

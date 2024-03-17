@@ -24,13 +24,3 @@ void Serial::onRemove()
 {
     Object::onRemove();
 }
-
-void Serial::setPort(const std::string portName)
-{
-    mPortName = portName;
-}
-
-void Serial::setBaudRate(unsigned int baudRate)
-{
-    mBaudRate = baudRate;
-}
