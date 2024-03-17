@@ -138,7 +138,7 @@ bool InkJet::TransparentButton(const char* name)
     return ret;
 }
 
-void InkJet::Begin(const char* name, bool* open)
+void InkJet::Begin(const char* name, bool* open, bool useWindowPadding)
 {
     // check tab active
     ImGuiWindow* window = ImGui::FindWindowByName(name);
@@ -166,7 +166,10 @@ void InkJet::Begin(const char* name, bool* open)
     ImGui::PopStyleVar();
 
     // push child padding. -1 to compensate for the child window border(which is needed to get child window padding)
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {16-1, 16-1});
+    if(useWindowPadding)
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {16-1, 16-1});
+    else
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
 
     // push child window background color to be same as the window background
     ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
@@ -175,24 +178,26 @@ void InkJet::Begin(const char* name, bool* open)
     ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
 
     // begin window child
-    ImGui::BeginChild("windowChild", ImGui::GetContentRegionAvail(), true);
+    if(useWindowPadding)
+        ImGui::BeginChild("windowChild", ImGui::GetContentRegionAvail(), true);
 
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {4, 4});
+    //ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {4, 4});
 
     // push regular border color for the user contents
     ImGui::PushStyleColor(ImGuiCol_Border, border);
 }
 
-void InkJet::End()
+void InkJet::End(bool useWindowPadding)
 {
     // pop regular border color
     ImGui::PopStyleColor();
 
     // pop frame padding for tab spacing
-    ImGui::PopStyleVar();
+    //ImGui::PopStyleVar();
 
     // end child
-    ImGui::EndChild();
+    if(useWindowPadding)
+        ImGui::EndChild();
 
     // pop child background, border color
     ImGui::PopStyleColor(2);
@@ -252,10 +257,8 @@ void InkJet::WidgetMenuBar(const std::function<void()>& Menu, const std::functio
     // same line in between
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
     ImGui::SameLine();
-    ImGui::PopStyleVar();
 
     // utility child
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
     ImGui::BeginChild("UtilityChild", {0, ImGui::GetFrameHeight()}, ImGuiChildFlags_None, ImGuiWindowFlags_None);
 
     Widget();
@@ -318,7 +321,7 @@ void InkJet::SiglotConnectionGraphView()
                 cv::imwrite(saveFile.result(), connectionGraphImage);
         }
 
-        ImGui::Checkbox("Capture hidden connections",  &showHiddenConnections);
+        InkJet::Checkbox("Capture hidden connections",  &showHiddenConnections);
 
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {12, 0});
         ImGui::SameLine(); ImGui::Dummy({0,0});
@@ -327,4 +330,31 @@ void InkJet::SiglotConnectionGraphView()
         ImGui::PopStyleVar();
     }InkJet::End();
     ImGui::PopStyleColor();
+}
+
+bool InkJet::Combo(const char *label, int *index, const std::vector<std::string> &items)
+{
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {16-1, 16-1});
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {8, 8});
+    if (ImGui::BeginCombo(label, items[*index].c_str(), ImGuiComboFlags_NoArrowButton))
+    {
+        for (int n = 0; n < items.size(); n++)
+        {
+            bool is_selected = (items[*index] == items[n]);
+            if (ImGui::Selectable(items[n].c_str(), is_selected))
+                *index = n;
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
+    ImGui::PopStyleVar(2);
+}
+
+bool InkJet::Checkbox(const char *label, bool* check)
+{
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {4, 4});
+    bool ret = ImGui::Checkbox("Capture hidden connections",  check);
+    ImGui::PopStyleVar();
+    return ret;
 }

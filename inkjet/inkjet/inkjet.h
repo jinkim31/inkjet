@@ -44,9 +44,9 @@ void DockSpace(bool leaveSpaceForStatusBar = true);
 
 void setStyle();
 
-void Begin(const char* name, bool* open=NULL);
+void Begin(const char* name, bool* open=NULL, bool useWindowPadding=true);
 
-void End();
+void End(bool useWindowPadding = true);
 
 void initFont();
 
@@ -61,6 +61,10 @@ void HLine();
 void VLine();
 
 void ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, bool home, bool refresh);
+
+bool Combo(const char* label, int* index, const std::vector<std::string>& items);
+
+bool Checkbox(const char* label, bool* check);
 
 void SiglotConnectionGraphView();
 
