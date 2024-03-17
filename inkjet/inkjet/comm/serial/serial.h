@@ -3,20 +3,25 @@
 
 #include <siglot/object.h>
 #include <siglot/observer.h>
+#include <libserialport/libserialport.h>
+
+namespace inkjet
+{
 
 class Serial : public siglot::Object
 {
 public:
     Serial();
     ~Serial();
-    void setPort(const std::string& portName);
+    std::vector<std::string> getPortNames();
+    void start();
+    void stop();
 private:
     siglot::Observer mObserver;
-    std::string mPortName;
-    bool mIsOpen;
-    unsigned int mBaudRate;
+    sp_port* mPort;
     void onMove(siglot::Thread &thread) override;
     void onRemove() override;
 };
 
+}
 #endif

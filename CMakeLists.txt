@@ -11,20 +11,34 @@ add_subdirectory(external/siglot)
 
 # inkjet library
 add_library(inkjet STATIC
-        inkjet/inkjet.cpp
-        inkjet/comm/serial/serial.cpp
+        inkjet/inkjet/inkjet.cpp
+        inkjet/inkjet/comm/serial/serial.cpp
 )
+
+# link libraries
 target_link_libraries(inkjet PUBLIC siglot imgui_bundle)
-target_include_directories(inkjet PUBLIC
-        inkjet
-        external/siglot)
+target_include_directories(inkjet PUBLIC  external/siglot)
+
+# link libserialport
+IF (WIN32)
+    list(APPEND CMAKE_PREFIX_PATH "external/libserialport/win_x86-64")
+    find_library(libserialport REQUIRED NAMES libserialport.lib)
+ELSEIF(APPLE)
+    list(APPEND CMAKE_PREFIX_PATH "external/libserialport/apple_arm64")
+    find_library(libserialport REQUIRED NAMES libserialport.dylib)
+ELSE(UNIX)
+    list(APPEND CMAKE_PREFIX_PATH "external/libserialport/linux_x86-64")
+    find_library(libserialport REQUIRED NAMES libserialport.a)
+ENDIF()
+target_link_libraries(inkjet PRIVATE ${libserialport})
+target_include_directories(inkjet PUBLIC external/libserialport)
+
+# inkjet include paths
+target_include_directories(inkjet PUBLIC inkjet)
 
 # example executable
 imgui_bundle_add_app(inkjet_example
         example/main.cpp
-        inkjet/inkjet.cpp
         example/application.cpp
-        inkjet/comm/serial/serial.cpp
 )
 target_link_libraries(inkjet_example PRIVATE inkjet)
-
