@@ -2,23 +2,29 @@ cmake_minimum_required(VERSION 3.12)
 project(inkjet)
 set(CMAKE_CXX_STANDARD 17)
 
+set(SIGLOT_USE_GRAPHVIZ ON)
 set(HELLOIMGUI_DOWNLOAD_FREETYPE_IF_NEEDED ON)
 set(IMMVISION_FETCH_OPENCV ON)
 
-if (NOT TARGET imgui_bundle)
-    include(FetchContent)
-    Set(FETCHCONTENT_QUIET FALSE)
-    FetchContent_Declare(imgui_bundle GIT_REPOSITORY https://github.com/pthom/imgui_bundle.git GIT_TAG main)
-    FetchContent_MakeAvailable(imgui_bundle)
-endif()
+add_subdirectory(external/imgui_bundle)
+add_subdirectory(external/siglot)
 
-imgui_bundle_add_app(${PROJECT_NAME}
+# inkjet library
+add_library(inkjet STATIC
+        inkjet/inkjet.cpp
+        inkjet/comm/serial/serial.cpp
+)
+target_link_libraries(inkjet PUBLIC siglot imgui_bundle)
+target_include_directories(inkjet PUBLIC
+        inkjet
+        external/siglot)
+
+# example executable
+imgui_bundle_add_app(inkjet_example
         example/main.cpp
         inkjet/inkjet.cpp
         example/application.cpp
         inkjet/comm/serial/serial.cpp
 )
-target_include_directories(${PROJECT_NAME} PRIVATE inkjet)
-add_subdirectory(external/siglot)
-target_link_libraries(${PROJECT_NAME} PRIVATE siglot)
+target_link_libraries(inkjet_example PRIVATE inkjet)
 
