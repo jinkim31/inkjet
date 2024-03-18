@@ -2,7 +2,7 @@
 #define INKJET_H_
 
 #ifdef _WIN32
-#define INKJET_ASSET_PREFIX
+#define INKJET_ASSET_PREFIX "./"
 #elif __unix__
 #define INKJET_ASSET_PREFIX
 #elif __linux__
@@ -20,8 +20,10 @@
 #include <siglot/thread.h>
 #include <siglot/lookup.h>
 #include <unordered_map>
+#ifdef INKJET_WITH_IMMVISION
 #include <immvision/image.h>
 #include <opencv2/opencv.hpp>
+#endif
 #include "../external/IconFontCppHeaders/IconsMaterialDesign.h"
 
 namespace InkJet
@@ -60,7 +62,9 @@ void HLine();
 
 void VLine();
 
+#ifdef INKJET_WITH_IMMVISION
 void ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, bool home, bool refresh);
+#endif
 
 bool Combo(const char* label, int* index, const std::vector<std::string>& items);
 

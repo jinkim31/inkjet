@@ -26,7 +26,9 @@ void inkjet::Serial::onRemove()
 std::vector<std::string> inkjet::Serial::getPortNames()
 {
     sp_port** ports;
-    if(sp_list_ports(&ports) < 0)
+    int ret = sp_list_ports(&ports);
+    std::cout<<"r"<<ret<<std::endl;
+    if(ret < 0)
         return {};
 
     std::vector<std::string> names;

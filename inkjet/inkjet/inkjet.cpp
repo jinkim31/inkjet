@@ -244,6 +244,11 @@ bool InkJet::InputText(const char *label, const char* hint, char *buf, size_t bu
 
 void InkJet::WidgetMenuBar(const std::function<void()>& Menu, const std::function<void()>& Widget)
 {
+    // top line to distinguish Windows titlebar
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
+    InkJet::HLine();
+    ImGui::PopStyleVar();
+
     // menu child
     ImGui::PushStyleColor(ImGuiCol_MenuBarBg, InkJet::panel);
     ImGui::BeginChild("MenuChild", {300, ImGui::GetFrameHeight()}, ImGuiChildFlags_None, ImGuiWindowFlags_MenuBar);
@@ -269,6 +274,7 @@ void InkJet::WidgetMenuBar(const std::function<void()>& Menu, const std::functio
     ImGui::PopStyleVar();
 }
 
+#ifdef INKJET_WITH_IMMVISION
 void InkJet::ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, bool home, bool refresh)
 {
     if(home)
@@ -294,9 +300,11 @@ void InkJet::ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, b
     //ImGui::PopStyleVar();
     param.RefreshImage = false;
 }
+#endif
 
 void InkJet::SiglotConnectionGraphView()
 {
+#ifdef INKJET_WITH_IMMVISION
     ImGui::PushStyleColor(ImGuiCol_WindowBg, panel);
     InkJet::Begin(ICON_MD_HUB" Siglot Graph");
     {
@@ -330,13 +338,17 @@ void InkJet::SiglotConnectionGraphView()
         ImGui::PopStyleVar();
     }InkJet::End();
     ImGui::PopStyleColor();
+#else
+    ImGui::Text("Inkjet was not build with ImmVision. Use \"INKJET_WITH_IMMVISION\" CMake option.");
+#endif
 }
 
 bool InkJet::Combo(const char *label, int *index, const std::vector<std::string> &items)
 {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {16-1, 16-1});
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {8, 8});
-    if (ImGui::BeginCombo(label, items[*index].c_str(), ImGuiComboFlags_NoArrowButton))
+    const char* preview = (*index < items.size()) ? items[*index].c_str() : "";
+    if (ImGui::BeginCombo(label, preview, ImGuiComboFlags_NoArrowButton))
     {
         for (int n = 0; n < items.size(); n++)
         {
@@ -349,6 +361,7 @@ bool InkJet::Combo(const char *label, int *index, const std::vector<std::string>
         ImGui::EndCombo();
     }
     ImGui::PopStyleVar(2);
+    return true;
 }
 
 bool InkJet::Checkbox(const char *label, bool* check)

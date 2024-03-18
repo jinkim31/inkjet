@@ -2,9 +2,14 @@ cmake_minimum_required(VERSION 3.12)
 project(inkjet)
 set(CMAKE_CXX_STANDARD 17)
 
-set(SIGLOT_USE_GRAPHVIZ ON)
+option(INKJET_WITH_IMMVISION "Use ImmVision and fetch OpenCV" OFF)
+
+if(${INKJET_WITH_IMMVISION})
+set(IMMVISION_FETCH_OPENCV OFF)
+set(IMGUI_BUNDLE_WITH_IMMVISION OFF)
+add_compile_definitions(INKJET_WITH_IMMVISION)
+endif ()
 set(HELLOIMGUI_DOWNLOAD_FREETYPE_IF_NEEDED ON)
-set(IMMVISION_FETCH_OPENCV ON)
 set(IMGUI_BUNDLE_BUILD_PYTHON OFF)
 
 add_subdirectory(external/imgui_bundle)
@@ -22,7 +27,7 @@ target_include_directories(inkjet PUBLIC  external/siglot)
 
 # link libserialport
 IF (WIN32)
-    list(APPEND CMAKE_PREFIX_PATH "external/libserialport/win_x86-64")
+    list(APPEND CMAKE_PREFIX_PATH "external/libserialport/win_x86-64_msvc")
     find_library(libserialport REQUIRED NAMES libserialport.lib)
 ELSEIF(APPLE)
     list(APPEND CMAKE_PREFIX_PATH "external/libserialport/apple_arm64")
