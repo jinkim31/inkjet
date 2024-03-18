@@ -304,10 +304,10 @@ void InkJet::ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, b
 
 void InkJet::SiglotConnectionGraphView()
 {
-#ifdef INKJET_WITH_IMMVISION
     ImGui::PushStyleColor(ImGuiCol_WindowBg, panel);
     InkJet::Begin(ICON_MD_HUB" Siglot Graph");
     {
+#ifdef INKJET_WITH_IMMVISION
         static cv::Mat connectionGraphImage = cv::Mat::ones(1000, 1000, CV_8UC1)*255;
         static ImmVision::ImageParams param;
         static bool showHiddenConnections = false;
@@ -336,11 +336,11 @@ void InkJet::SiglotConnectionGraphView()
 
         ImageView("##imageView",connectionGraphImage, param, home, refresh);
         ImGui::PopStyleVar();
+#else
+        ImGui::Text("Inkjet was not build with ImmVision. Use \"INKJET_WITH_IMMVISION\" CMake option.");
+#endif
     }InkJet::End();
     ImGui::PopStyleColor();
-#else
-    ImGui::Text("Inkjet was not build with ImmVision. Use \"INKJET_WITH_IMMVISION\" CMake option.");
-#endif
 }
 
 bool InkJet::Combo(const char *label, int *index, const std::vector<std::string> &items)
