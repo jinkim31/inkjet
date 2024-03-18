@@ -18,6 +18,7 @@ public:
     bool open();    SIGLOT_ADD_FROM_FUNC(bool, Serial, open);
     bool close();   SIGLOT_ADD_FROM_FUNC(bool, Serial, close);
     bool write(std::vector<uint8_t>&& data); SIGLOT_ADD_FROM_FUNC_1(bool, Serial, write, std::vector<uint8_t>, data);
+    void SIGNAL_RxReady(std::vector<uint8_t>&& data){}
 private:
     void SLOT_observerCallback();
     siglot::Observer mObserver;

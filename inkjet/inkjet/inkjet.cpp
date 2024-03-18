@@ -35,7 +35,7 @@ void InkJet::VLine()
     auto draw_list = ImGui::GetCurrentWindow()->DrawList;
     draw_list->AddLine(
             ImGui::GetCursorScreenPos(),
-            ImGui::GetCursorScreenPos() + ImVec2(0, ImGui::GetContentRegionAvail().y),
+            ImGui::GetCursorScreenPos() + ImVec2(0, ImGui::GetFrameHeight()),
             ImGui::GetColorU32(ImGuiCol_Border));
     ImGui::Dummy({1, 0});
 }

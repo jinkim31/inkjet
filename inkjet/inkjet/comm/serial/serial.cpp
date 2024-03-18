@@ -80,14 +80,16 @@ void inkjet::Serial::SLOT_observerCallback()
     if(mPort==NULL)
         return;
 
-    if(sp_input_waiting(mPort) <= 0)
+    if(sp_input_waiting(mPort)<=0)
         return;
-
     static uint8_t buffer[1024];
-    size_t n = sp_blocking_read_next(mPort, buffer, 1024, 1);
+    int n = sp_blocking_read_next(mPort, buffer, 1024, 100);
+
+    std::vector<uint8_t> rx;
+    rx.reserve(n);
     for(int i=0; i<n; i++)
-        std::cout<<buffer[i];
-    std::cout<<std::endl;
+        rx.push_back(buffer[i]);
+    emit(SIGLOT(Serial::SIGNAL_RxReady), std::move(rx));
 }
 
 void inkjet::Serial::setPortName(std::string &&portName)
