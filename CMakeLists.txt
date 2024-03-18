@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(SIGLOT_USE_GRAPHVIZ ON)
 set(HELLOIMGUI_DOWNLOAD_FREETYPE_IF_NEEDED ON)
 set(IMMVISION_FETCH_OPENCV ON)
+set(IMGUI_BUNDLE_BUILD_PYTHON OFF)
 
 add_subdirectory(external/imgui_bundle)
 add_subdirectory(external/siglot)
