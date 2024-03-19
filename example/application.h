@@ -1,7 +1,7 @@
 #ifndef INKJET_APPLICATION_H
 #define INKJET_APPLICATION_H
 
-#include "inkjet.h"
+#include <inkjet/inkjet.h>
 #include <siglot/observer.h>
 
 class Application : public siglot::Object
