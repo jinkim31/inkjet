@@ -19,6 +19,7 @@ add_subdirectory(external/siglot)
 add_library(inkjet STATIC
         inkjet/inkjet/inkjet.cpp
         inkjet/inkjet/comm/serial/serial.cpp
+        inkjet/inkjet/layout/width_layout.cpp
 )
 
 # link libraries

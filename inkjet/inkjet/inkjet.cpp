@@ -130,7 +130,7 @@ void InkJet::setStyle()
     style->WindowRounding = 0;
 }
 
-bool InkJet::TransparentButton(const char* name)
+bool InkJet::TransparentButton(const char* name, const ImVec2& size)
 {
     ImGui::PushStyleColor(ImGuiCol_Button, InkJet::colorRGBA(0, 0, 0, 0));
     bool ret = ImGui::Button(name);
