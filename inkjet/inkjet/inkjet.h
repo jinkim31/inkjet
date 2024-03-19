@@ -54,7 +54,7 @@ void initFont();
 
 bool InputText(const char *label, const char* hint, char *buf, size_t buf_size, ImGuiInputTextFlags flags = 0);
 
-void WidgetMenuBar(const std::function<void()>& Menu, const std::function<void()>& Widget);
+void WidgetMenuBar(const std::function<void()>& Menu, const std::function<void()>& Widget, const float& menuWidth=300);
 
 bool TransparentButton(const char* name, const ImVec2& size=ImVec2(0, 0));
 

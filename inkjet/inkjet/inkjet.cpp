@@ -242,7 +242,7 @@ bool InkJet::InputText(const char *label, const char* hint, char *buf, size_t bu
     return ret;
 }
 
-void InkJet::WidgetMenuBar(const std::function<void()>& Menu, const std::function<void()>& Widget)
+void InkJet::WidgetMenuBar(const std::function<void()>& Menu, const std::function<void()>& Widget, const float& menuWidth)
 {
     // top line to distinguish Windows titlebar
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
@@ -251,7 +251,7 @@ void InkJet::WidgetMenuBar(const std::function<void()>& Menu, const std::functio
 
     // menu child
     ImGui::PushStyleColor(ImGuiCol_MenuBarBg, InkJet::panel);
-    ImGui::BeginChild("MenuChild", {300, ImGui::GetFrameHeight()}, ImGuiChildFlags_None, ImGuiWindowFlags_MenuBar);
+    ImGui::BeginChild("MenuChild", {menuWidth, ImGui::GetFrameHeight()}, ImGuiChildFlags_None, ImGuiWindowFlags_MenuBar);
     if (ImGui::BeginMenuBar()) {
         Menu();
         ImGui::EndMenuBar();
