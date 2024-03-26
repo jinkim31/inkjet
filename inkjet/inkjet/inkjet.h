@@ -46,9 +46,9 @@ void DockSpace(bool leaveSpaceForStatusBar = true);
 
 void setStyle();
 
-void Begin(const char* name, bool* open=NULL, bool useWindowPadding=true);
+void Begin(const char* name, bool* open=NULL);
 
-void End(bool useWindowPadding = true);
+void End();
 
 void initFont();
 

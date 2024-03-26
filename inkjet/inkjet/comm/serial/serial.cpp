@@ -1,33 +1,32 @@
 #include "serial.h"
 
-inkjet::Serial::Serial()
+InkJet::Serial::Serial()
 {
     mPort = NULL;
     setName("serial");
     connect(mObserver, SIGLOT(siglot::Observer::SIGNAL_observed), *this, SIGLOT(Serial::SLOT_observerCallback));
 }
 
-inkjet::Serial::~Serial()
+InkJet::Serial::~Serial()
 {
     if(mPort != NULL)
         sp_free_port(mPort);
 }
 
-void inkjet::Serial::onMove(siglot::Thread &thread)
+void InkJet::Serial::onMove(siglot::Thread &thread)
 {
     mObserver.move(thread);
 }
 
-void inkjet::Serial::onRemove()
+void InkJet::Serial::onRemove()
 {
     mObserver.remove();
 }
 
-std::vector<std::string> inkjet::Serial::getPortNames()
+std::vector<std::string> InkJet::Serial::getPortNames()
 {
     sp_port** ports;
     int ret = sp_list_ports(&ports);
-    std::cout<<"r"<<ret<<std::endl;
     if(ret < 0)
         return {};
 
@@ -43,7 +42,7 @@ std::vector<std::string> inkjet::Serial::getPortNames()
     return names;
 }
 
-bool inkjet::Serial::open()
+bool InkJet::Serial::open()
 {
     sp_port* port;
     if(sp_get_port_by_name(mPortName.c_str(), &port)<0)
@@ -63,7 +62,7 @@ bool inkjet::Serial::open()
     return true;
 }
 
-bool inkjet::Serial::close()
+bool InkJet::Serial::close()
 {
     if(mPort==NULL)
         return false;
@@ -77,35 +76,67 @@ bool inkjet::Serial::close()
     return true;
 }
 
-void inkjet::Serial::SLOT_observerCallback()
+void InkJet::Serial::SLOT_observerCallback()
 {
     if(mPort==NULL)
         return;
 
     if(sp_input_waiting(mPort)<=0)
         return;
-    static uint8_t buffer[1024];
-    int n = sp_blocking_read_next(mPort, buffer, 1024, 100);
+    int n = sp_blocking_read_next(mPort, mRxBuffer, 1024, 100);
 
     std::vector<uint8_t> rx;
     rx.reserve(n);
     for(int i=0; i<n; i++)
-        rx.push_back(buffer[i]);
+    {
+        rx.push_back(mRxBuffer[i]);
+        mRxLine.append(1, mRxBuffer[i]);
+        if(mRxBuffer[i] == '\0' || mRxBuffer[i] == '\n')
+        {
+            emit(SIGLOT(Serial::SIGNAL_RxLineReady), std::move(mRxLine));
+            mRxLine = "";
+        }
+    }
     emit(SIGLOT(Serial::SIGNAL_RxReady), std::move(rx));
 }
 
-void inkjet::Serial::setPortName(std::string &&portName)
+void InkJet::Serial::setPortName(std::string &&portName)
 {
     mPortName = std::move(portName);
 }
 
-bool inkjet::Serial::write(std::vector<uint8_t> &&data)
+bool InkJet::Serial::write(std::vector<uint8_t> &&data)
 {
     if(sp_blocking_write(mPort, data.data(), data.size(), 100) == data.size())
-    {
-        std::cout<<"written "<<data.size()<<" bytes"<<std::endl;
         return true;
-    }
     else
         return false;
+}
+
+bool InkJet::Serial::writeString(std::string &&data)
+{
+    if(sp_blocking_write(mPort, data.data(), data.size(), 100) == data.size())
+        return true;
+    else
+        return false;
+}
+
+std::string InkJet::Serial::blockingReadLine(int timeoutMs)
+{
+    std::string res;
+    while(true)
+    {
+        int n = sp_blocking_read_next(mPort, mRxBuffer, 1024, timeoutMs);
+        if(n <= 0)
+            return "";
+
+        for(int i=0; i<n; i++)
+        {
+            res.append(1, (char)mRxBuffer[i]);
+            if(mRxBuffer[i] == '\n')
+            {
+                return res;
+            }
+        }
+    }
 }

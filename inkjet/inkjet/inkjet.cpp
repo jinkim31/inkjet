@@ -109,11 +109,11 @@ void InkJet::setStyle()
     colors[ImGuiCol_PlotLinesHovered]       = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
     colors[ImGuiCol_PlotHistogram]          = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
     colors[ImGuiCol_PlotHistogramHovered]   = ImVec4(1.00f, 0.45f, 0.00f, 1.00f);
-    colors[ImGuiCol_TableHeaderBg]          = ImVec4(0.78f, 0.87f, 0.98f, 1.00f);
-    colors[ImGuiCol_TableBorderStrong]      = ImVec4(0.57f, 0.57f, 0.64f, 1.00f);   // Prefer using Alpha=1.0 here
-    colors[ImGuiCol_TableBorderLight]       = ImVec4(0.68f, 0.68f, 0.74f, 1.00f);   // Prefer using Alpha=1.0 here
-    colors[ImGuiCol_TableRowBg]             = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-    colors[ImGuiCol_TableRowBgAlt]          = ImVec4(0.30f, 0.30f, 0.30f, 0.09f);
+    colors[ImGuiCol_TableHeaderBg]          = panel;
+    colors[ImGuiCol_TableBorderStrong]      = border;
+    colors[ImGuiCol_TableBorderLight]       = border;
+    colors[ImGuiCol_TableRowBg]             = white;
+    colors[ImGuiCol_TableRowBgAlt]          = panel;
     colors[ImGuiCol_TextSelectedBg]         = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
     colors[ImGuiCol_DragDropTarget]         = ImVec4(0.26f, 0.59f, 0.98f, 0.95f);
     colors[ImGuiCol_NavHighlight]           = colors[ImGuiCol_HeaderHovered];
@@ -128,6 +128,7 @@ void InkJet::setStyle()
     style->ItemInnerSpacing = {4, 4};
     style->WindowBorderSize = 0;
     style->WindowRounding = 0;
+    style->CellPadding = {8, 8};
 }
 
 bool InkJet::TransparentButton(const char* name, const ImVec2& size)
@@ -138,7 +139,7 @@ bool InkJet::TransparentButton(const char* name, const ImVec2& size)
     return ret;
 }
 
-void InkJet::Begin(const char* name, bool* open, bool useWindowPadding)
+void InkJet::Begin(const char* name, bool* open)
 {
     // check tab active
     ImGuiWindow* window = ImGui::FindWindowByName(name);
@@ -154,7 +155,7 @@ void InkJet::Begin(const char* name, bool* open, bool useWindowPadding)
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
 
     // begin window
-    ImGuiWindowFlags window_flags =  ImGuiWindowFlags_None;
+    ImGuiWindowFlags window_flags =  ImGuiWindowFlags_None | ImGuiWindowFlags_NoScrollbar | ImGuiNextWindowDataFlags_HasScroll;
     ImGui::Begin(name, open, window_flags);
 
     // pop inactive title color
@@ -166,10 +167,8 @@ void InkJet::Begin(const char* name, bool* open, bool useWindowPadding)
     ImGui::PopStyleVar();
 
     // push child padding. -1 to compensate for the child window border(which is needed to get child window padding)
-    if(useWindowPadding)
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {16-1, 16-1});
-    else
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {16-1, 16-1});
+
 
     // push child window background color to be same as the window background
     ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
@@ -178,8 +177,7 @@ void InkJet::Begin(const char* name, bool* open, bool useWindowPadding)
     ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
 
     // begin window child
-    if(useWindowPadding)
-        ImGui::BeginChild("windowChild", ImGui::GetContentRegionAvail(), true);
+    ImGui::BeginChild("windowChild", ImGui::GetContentRegionAvail());
 
     //ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {4, 4});
 
@@ -187,7 +185,7 @@ void InkJet::Begin(const char* name, bool* open, bool useWindowPadding)
     ImGui::PushStyleColor(ImGuiCol_Border, border);
 }
 
-void InkJet::End(bool useWindowPadding)
+void InkJet::End()
 {
     // pop regular border color
     ImGui::PopStyleColor();
@@ -196,8 +194,7 @@ void InkJet::End(bool useWindowPadding)
     //ImGui::PopStyleVar();
 
     // end child
-    if(useWindowPadding)
-        ImGui::EndChild();
+    ImGui::EndChild();
 
     // pop child background, border color
     ImGui::PopStyleColor(2);
@@ -352,7 +349,7 @@ bool InkJet::Combo(const char *label, int *index, const std::vector<std::string>
     {
         for (int n = 0; n < items.size(); n++)
         {
-            bool is_selected = (items[*index] == items[n]);
+            bool is_selected = items.size() <= *index || (items[*index] == items[n]);
             if (ImGui::Selectable(items[n].c_str(), is_selected))
                 *index = n;
             if (is_selected)
