@@ -58,7 +58,7 @@ bool InkJet::Serial::open()
     sp_set_bits(port, 8);
 
     mPort = port;
-    mObserver.start();
+    //mObserver.start();
     return true;
 }
 

@@ -1,6 +1,8 @@
 #ifndef INKJET_STATE_MACHINE_H
 #define INKJET_STATE_MACHINE_H
 
+#define ENUM_STR_PAIR(x) {x, #x}
+
 #include <unordered_map>
 #include <iostream>
 #include <functional>
@@ -39,6 +41,7 @@ public:
 
     StateMachine()
     {
+        mName = "unnamed state machine";
         mVerbose = false;
     }
 
@@ -47,6 +50,11 @@ public:
         mVerbose = verbose;
     }
     void setState(const int& state){mCurrentState = state;}
+
+    void setName(const std::string& name);
+
+    void setStateNameMap(const std::unordered_map<int, std::string>& stateNameMap){mStateNameMap = stateNameMap;}
+    void setEventNameMap(const std::unordered_map<int, std::string>& eventNameMap){mEventNameMap = eventNameMap;}
 
     StateMachine& addTransition(int sourceState, int event, int destinationState, const std::function<void(void)>& handler=NULL)
     {
@@ -72,12 +80,27 @@ public:
         Transition t{};
         t.startState = mCurrentState;
         t.event = event;
-        const auto& iter = mTransitions.find(t);
-        if(iter == mTransitions.end())
+        const auto &iter = mTransitions.find(t);
+        if (iter == mTransitions.end())
+        {
+            if(mVerbose)
+                std::cerr<<mName<<": "
+                                <<getNameFromMap(mStateNameMap, mCurrentState)
+                                <<" > "
+                                <<getNameFromMap(mEventNameMap, event)
+                                <<" > [NONE]"<<std::endl;
             return;
+        }
 
         if(mVerbose)
-            std::cout<<"statemachine "<<mCurrentState<<">"<<event<<">"<<iter->second.first<<std::endl;
+            std::cout<<mName<<": "
+                     <<getNameFromMap(mStateNameMap, mCurrentState)
+                     <<" > "
+                     <<getNameFromMap(mEventNameMap, event)
+                     <<" > "
+                     <<getNameFromMap(mStateNameMap, iter->second.first)
+                     <<std::endl;
+
         const auto& handler = iter->second.second;
         if(handler)
             handler();
@@ -97,10 +120,20 @@ public:
     }
 
 private:
+    std::string getNameFromMap(const std::unordered_map<int, std::string>& map, const int& index)
+    {
+        auto itr = map.find(index);
+        if(itr == map.end())
+            return "[" + std::to_string(index) + "]";
+        return itr->second;
+    }
+
     int mCurrentState;
     int mChainingState;
     bool mVerbose;
+    std::string mName;
     std::optional<int> mReservedEvent;
+    std::unordered_map<int, std::string> mStateNameMap, mEventNameMap;
     std::unordered_map<Transition, std::pair<int, std::function<void(void)>>> mTransitions;
 };
 }
