@@ -18,17 +18,25 @@ set(IMGUI_BUNDLE_BUILD_PYTHON OFF)
 add_subdirectory(external/imgui_bundle)
 add_subdirectory(external/siglot)
 
+# find boost
+find_package(Boost 1.40.0 REQUIRED system)
+
 # inkjet library
 add_library(inkjet STATIC
         inkjet/inkjet/inkjet.cpp
         inkjet/inkjet/comm/serial/serial.cpp
         inkjet/inkjet/layout/width_layout.cpp
         inkjet/inkjet/state_machine/state_machine.cpp
+        inkjet/inkjet/comm/comm.cpp
+        inkjet/inkjet/comm/socket/udp_socket.cpp
 )
+message("boost:")
+message(${Boost_INCLUDE_DIRS})
 
 # link libraries
-target_link_libraries(inkjet PUBLIC siglot imgui_bundle)
+target_link_libraries(inkjet PUBLIC ${Boost_LIBRARIES} siglot imgui_bundle)
 target_include_directories(inkjet PUBLIC  external/siglot)
+target_include_directories(inkjet PUBLIC ${Boost_INCLUDE_DIRS})
 
 # link libserialport
 IF (WIN32)

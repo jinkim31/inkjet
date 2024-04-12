@@ -78,7 +78,7 @@ void InkJet::setStyle()
     colors[ImGuiCol_TitleBg]                = panel;
     colors[ImGuiCol_TitleBgActive]          = panel;
     colors[ImGuiCol_TitleBgCollapsed]       = ImVec4(1.00f, 1.00f, 1.00f, 0.51f);
-    colors[ImGuiCol_MenuBarBg]              = white;
+    colors[ImGuiCol_MenuBarBg]              = panel;
     colors[ImGuiCol_ScrollbarBg]            = ImVec4(0.98f, 0.98f, 0.98f, 0.53f);
     colors[ImGuiCol_ScrollbarGrab]          = ImVec4(0.69f, 0.69f, 0.69f, 0.80f);
     colors[ImGuiCol_ScrollbarGrabHovered]   = ImVec4(0.49f, 0.49f, 0.49f, 0.80f);
@@ -138,8 +138,7 @@ bool InkJet::TransparentButton(const char* name, const ImVec2& size)
     ImGui::PopStyleColor();
     return ret;
 }
-
-void InkJet::Begin(const char* name, bool* open)
+void InkJet::Begin(const char* name, bool* open, bool useMenu)
 {
     // check tab active
     ImGuiWindow* window = ImGui::FindWindowByName(name);
@@ -155,8 +154,8 @@ void InkJet::Begin(const char* name, bool* open)
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
 
     // begin window
-    ImGuiWindowFlags window_flags =  ImGuiWindowFlags_None | ImGuiWindowFlags_NoScrollbar | ImGuiNextWindowDataFlags_HasScroll;
-    ImGui::Begin(name, open, window_flags);
+    ImGuiWindowFlags flags =  ImGuiWindowFlags_None | ImGuiWindowFlags_NoScrollbar | ImGuiNextWindowDataFlags_HasScroll;
+    ImGui::Begin(name, open, flags);
 
     // pop inactive title color
     ImGui::PopStyleColor();
@@ -169,7 +168,6 @@ void InkJet::Begin(const char* name, bool* open)
     // push child padding. -1 to compensate for the child window border(which is needed to get child window padding)
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {16-1, 16-1});
 
-
     // push child window background color to be same as the window background
     ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
 
@@ -177,7 +175,13 @@ void InkJet::Begin(const char* name, bool* open)
     ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
 
     // begin window child
-    ImGui::BeginChild("windowChild", ImGui::GetContentRegionAvail());
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
+    ImGuiWindowFlags childWindowFlags = useMenu ? ImGuiWindowFlags_MenuBar : ImGuiWindowFlags_None;
+    ImGui::BeginChild("windowChild", ImGui::GetContentRegionAvail(), ImGuiChildFlags_None, childWindowFlags);
+
+
+    // push child padding. -1 to compensate for the child window border(which is needed to get child window padding)
+    ImGui::PopStyleVar();
 
     //ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {4, 4});
 
@@ -247,14 +251,12 @@ void InkJet::WidgetMenuBar(const std::function<void()>& Menu, const std::functio
     ImGui::PopStyleVar();
 
     // menu child
-    ImGui::PushStyleColor(ImGuiCol_MenuBarBg, InkJet::panel);
     ImGui::BeginChild("MenuChild", {menuWidth, ImGui::GetFrameHeight()}, ImGuiChildFlags_None, ImGuiWindowFlags_MenuBar);
     if (ImGui::BeginMenuBar()) {
         Menu();
         ImGui::EndMenuBar();
     }
     ImGui::EndChild();
-    ImGui::PopStyleColor();
 
     // same line in between
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});

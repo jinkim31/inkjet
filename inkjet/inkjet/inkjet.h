@@ -46,7 +46,7 @@ void DockSpace(bool leaveSpaceForStatusBar = true);
 
 void setStyle();
 
-void Begin(const char* name, bool* open=NULL);
+void Begin(const char* name, bool* open=NULL, bool useMenu=false);
 
 void End();
 
