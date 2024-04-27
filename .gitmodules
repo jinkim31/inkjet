@@ -7,3 +7,6 @@
 [submodule "external/imgui_bundle"]
 	path = external/imgui_bundle
 	url = https://github.com/pthom/imgui_bundle.git
+[submodule "external/poco"]
+	path = external/poco
+	url = https://github.com/pocoproject/poco.git
