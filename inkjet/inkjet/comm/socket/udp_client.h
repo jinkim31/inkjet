@@ -1,5 +1,5 @@
-#ifndef NETWIRE_VIEW_UDP_SOCKET_H
-#define NETWIRE_VIEW_UDP_SOCKET_H
+#ifndef NETWIRE_VIEW_UDP_CLIENT_H
+#define NETWIRE_VIEW_UDP_CLIENT_H
 
 #include "../comm.h"
 #include <boost/asio.hpp>
@@ -10,13 +10,13 @@ using namespace boost::asio;
 namespace inkjet
 {
 
-class UdpSocket : public Comm
+class UDPClient : public Comm
 {
 
 public:
-    UdpSocket();
-    bool setIP(const std::string&& ip);
-    bool setPort(const uint16_t&& port);
+    static std::vector<std::string> getAdapterIPs();
+    UDPClient();
+    bool setEndpoint(std::string&& ip, uint16_t&& port);
     bool open() override;
     bool close() override;
     bool write(std::vector<uint8_t> &&data) override;
@@ -30,6 +30,7 @@ private:
     uint16_t mPort;
     bool mIsOpen;
     io_service mIoService;
+    ip::udp::resolver resolver{mIoService};
     ip::udp::socket mSocket{mIoService};
     ip::udp::endpoint mEndpoint;
 };

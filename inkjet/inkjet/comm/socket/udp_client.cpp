@@ -1,12 +1,22 @@
-#include "udp_socket.h"
+#include "udp_client.h"
 
-
-inkjet::UdpSocket::UdpSocket()
+inkjet::UDPClient::UDPClient()
 {
     mIsOpen = false;
 }
 
-bool inkjet::UdpSocket::open()
+bool inkjet::UDPClient::setEndpoint(std::string &&ip, uint16_t &&port)
+{
+    mIpString = ip;
+    mPort = port;
+
+    ip::udp::resolver::query query(ip::udp::v4(), mIpString, std::to_string(mPort));
+    mEndpoint = *resolver.resolve(query);
+
+    return true;
+}
+
+bool inkjet::UDPClient::open()
 {
     if(mIsOpen)
         return false;
@@ -20,7 +30,7 @@ bool inkjet::UdpSocket::open()
     return true;
 }
 
-bool inkjet::UdpSocket::close()
+bool inkjet::UDPClient::close()
 {
     if(!mIsOpen)
         return false;
@@ -28,43 +38,46 @@ bool inkjet::UdpSocket::close()
     return true;
 }
 
-bool inkjet::UdpSocket::write(std::vector<uint8_t> &&data)
+bool inkjet::UDPClient::write(std::vector<uint8_t> &&data)
 {
     return false;
 }
 
-bool inkjet::UdpSocket::writeString(std::string &&data)
+std::vector<std::string> inkjet::UDPClient::getAdapterIPs()
+{
+    boost::asio::io_service io;
+    boost::asio::ip::tcp::resolver resolver(io);
+    boost::asio::ip::tcp::resolver::query query(boost::asio::ip::host_name() + ".local", "");
+    boost::asio::ip::tcp::resolver::iterator iter = resolver.resolve(query);
+    boost::asio::ip::tcp::resolver::iterator end;
+    std::vector<std::string> IPs;
+
+    while(iter != end) {
+        std::cout<<iter->endpoint().address().to_string()<<std::endl;
+        //if(iter->endpoint().address().is_v4()
+        //&& std::find(IPs.begin(), IPs.end(),iter->endpoint().address().to_string()) == IPs.end())
+            IPs.push_back(std::move(iter->endpoint().address().to_string()));
+        ++iter;
+    }
+    return IPs;
+}
+
+bool inkjet::UDPClient::writeString(std::string &&data)
 {
     return false;
 }
 
-void inkjet::UdpSocket::SIGNAL_ReadReady(std::vector<uint8_t> &&data)
+void inkjet::UDPClient::SIGNAL_ReadReady(std::vector<uint8_t> &&data)
 {
 
 }
 
-void inkjet::UdpSocket::SIGNAL_ReadLineReady(std::string &&data)
+void inkjet::UDPClient::SIGNAL_ReadLineReady(std::string &&data)
 {
 
 }
 
-bool inkjet::UdpSocket::setIP(const std::string&& ip)
+void inkjet::UDPClient::SLOT_observerCallback()
 {
-    mIpString = ip;
-    try{mEndpoint = ip::udp::endpoint(ip::address::from_string(mIpString), mPort);}
-    catch(std::exception& e){return false;}
-    return true;
-}
-
-bool inkjet::UdpSocket::setPort(const uint16_t&& port)
-{
-    mPort = port;
-    try{mEndpoint = ip::udp::endpoint(ip::address::from_string(mIpString), mPort);}
-    catch(std::exception& e){return false;}
-    return true;
-}
-
-void inkjet::UdpSocket::SLOT_observerCallback()
-{
-    std::cout<<"observer"<<std::endl;
+    Comm::SLOT_observerCallback();
 }
