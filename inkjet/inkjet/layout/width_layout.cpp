@@ -1,7 +1,7 @@
 #include "width_layout.h"
 #include "iostream"
 
-void InkJet::BeginWLayout(const std::vector<float> &layout, bool step)
+void inkjet::BeginWLayout(const std::vector<float> &layout, bool step)
 {
     float fixedWidthsPx = 0;
     float nGrowWidthSteps = 0;
@@ -33,11 +33,11 @@ void InkJet::BeginWLayout(const std::vector<float> &layout, bool step)
         ImGui::PushItemWidth(widthLayoutWidths[widthLayoutIndex]);
 }
 
-void InkJet::StepWLayout()
+void inkjet::StepWLayout()
 {
     if(widthLayoutWidths.size() <= widthLayoutIndex)
     {
-        std::cerr<<"InkJet::StepWLayout() index out of bound.";
+        std::cerr<<"inkjet::StepWLayout() index out of bound.";
         return;
     }
     ImGui::PopItemWidth();
@@ -45,18 +45,18 @@ void InkJet::StepWLayout()
     ImGui::SameLine();
 }
 
-ImVec2 InkJet::StepWLayoutVec()
+ImVec2 inkjet::StepWLayoutVec()
 {
     if(widthLayoutWidths.size() <= widthLayoutIndex)
     {
-        std::cerr<<"InkJet::StepWLayout() index out of bound.";
+        std::cerr<<"inkjet::StepWLayout() index out of bound.";
         return {0, 0};
     }
     ImGui::SameLine();
     return {widthLayoutWidths[widthLayoutIndex++], 0};
 }
 
-void InkJet::EndWLayout()
+void inkjet::EndWLayout()
 {
     ImGui::PopItemWidth();
 }

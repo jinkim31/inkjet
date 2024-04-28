@@ -5,7 +5,7 @@
 #include <siglot/observer.h>
 #include <libserialport/libserialport.h>
 
-namespace InkJet
+namespace inkjet
 {
 
 class Serial : public siglot::Object

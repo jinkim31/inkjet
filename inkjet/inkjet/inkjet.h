@@ -26,7 +26,7 @@
 #endif
 #include "../external/IconFontCppHeaders/IconsMaterialDesign.h"
 
-namespace InkJet
+namespace inkjet
 {
 static ImVec4 colorRGB(uint8_t r, uint8_t g, uint8_t b){ return {r/255.0f, g/255.0f, b/255.0f, 1.0f}; }
 static ImVec4 colorRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a){ return {r/255.0f, g/255.0f, b/255.0f, a/255.0f}; }
@@ -46,9 +46,9 @@ void DockSpace(bool leaveSpaceForStatusBar = true);
 
 void setStyle();
 
-void Begin(const char* name, bool* open=NULL, bool useMenu=false);
+void Begin(const char* name, bool* open=NULL, bool usePadding=true, const std::function<void(void)>& ShowMenu=NULL);
 
-void End();
+void End(bool usePadding=true);
 
 void initFont();
 
@@ -71,6 +71,15 @@ bool Combo(const char* label, int* index, const std::vector<std::string>& items)
 bool Checkbox(const char* label, bool* check);
 
 void SiglotConnectionGraphView();
+
+enum LEDColor
+{
+    RED,
+    GREEN,
+    YELLOW,
+    OFF,
+};
+void LED(LEDColor ledColor);
 
 };
 #endif

@@ -20,9 +20,6 @@ add_subdirectory(external/imgui_bundle)
 add_subdirectory(external/siglot)
 add_subdirectory(external/poco)
 
-# find boost
-find_package(Boost 1.40.0 REQUIRED system)
-
 # inkjet library
 add_library(inkjet STATIC
         inkjet/inkjet/inkjet.cpp
@@ -30,12 +27,9 @@ add_library(inkjet STATIC
         inkjet/inkjet/layout/width_layout.cpp
         inkjet/inkjet/state_machine/state_machine.cpp
         inkjet/inkjet/comm/comm.cpp
+        inkjet/inkjet/comm/socket/socket.cpp
         inkjet/inkjet/comm/socket/udp_client.cpp
 )
-
-# link libraries
-target_link_libraries(inkjet PUBLIC  siglot imgui_bundle)
-target_include_directories(inkjet PUBLIC  external/siglot)
 
 # link libraries
 IF (WIN32)
@@ -49,13 +43,15 @@ ELSE(UNIX)
     find_library(libserialport REQUIRED NAMES libserialport.a)
 ENDIF()
 target_link_libraries(inkjet PRIVATE ${libserialport})
+target_link_libraries(inkjet PUBLIC  siglot imgui_bundle)
 target_link_libraries(inkjet PRIVATE Poco::Net)
 
-# inkjet include paths
+# inkjet include directories
 target_include_directories(inkjet PUBLIC inkjet)
-target_include_directories(inkjet PRIVATE poco/Net/include)
-target_include_directories(inkjet PRIVATE poco/Foundation/include)
+target_include_directories(inkjet PUBLIC  external/siglot)
 target_include_directories(inkjet PUBLIC external/libserialport)
+target_include_directories(inkjet PUBLIC external/poco/Net/include)
+target_include_directories(inkjet PUBLIC external/poco/Foundation/include)
 
 # example executable
 imgui_bundle_add_app(inkjet_example

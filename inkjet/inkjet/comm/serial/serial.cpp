@@ -1,29 +1,29 @@
 #include "serial.h"
 
-InkJet::Serial::Serial()
+inkjet::Serial::Serial()
 {
     mPort = NULL;
     setName("serial");
     connect(mObserver, SIGLOT(siglot::Observer::SIGNAL_observed), *this, SIGLOT(Serial::SLOT_observerCallback));
 }
 
-InkJet::Serial::~Serial()
+inkjet::Serial::~Serial()
 {
     if(mPort != NULL)
         sp_free_port(mPort);
 }
 
-void InkJet::Serial::onMove(siglot::Thread &thread)
+void inkjet::Serial::onMove(siglot::Thread &thread)
 {
     mObserver.move(thread);
 }
 
-void InkJet::Serial::onRemove()
+void inkjet::Serial::onRemove()
 {
     mObserver.remove();
 }
 
-std::vector<std::string> InkJet::Serial::getPortNames()
+std::vector<std::string> inkjet::Serial::getPortNames()
 {
     sp_port** ports;
     int ret = sp_list_ports(&ports);
@@ -42,7 +42,7 @@ std::vector<std::string> InkJet::Serial::getPortNames()
     return names;
 }
 
-bool InkJet::Serial::open()
+bool inkjet::Serial::open()
 {
     sp_port* port;
     if(sp_get_port_by_name(mPortName.c_str(), &port)<0)
@@ -62,7 +62,7 @@ bool InkJet::Serial::open()
     return true;
 }
 
-bool InkJet::Serial::close()
+bool inkjet::Serial::close()
 {
     if(mPort==NULL)
         return false;
@@ -76,7 +76,7 @@ bool InkJet::Serial::close()
     return true;
 }
 
-void InkJet::Serial::SLOT_observerCallback()
+void inkjet::Serial::SLOT_observerCallback()
 {
     if(mPort==NULL)
         return;
@@ -100,12 +100,12 @@ void InkJet::Serial::SLOT_observerCallback()
     emit(SIGLOT(Serial::SIGNAL_RxReady), std::move(rx));
 }
 
-void InkJet::Serial::setPortName(std::string &&portName)
+void inkjet::Serial::setPortName(std::string &&portName)
 {
     mPortName = std::move(portName);
 }
 
-bool InkJet::Serial::write(std::vector<uint8_t> &&data)
+bool inkjet::Serial::write(std::vector<uint8_t> &&data)
 {
     if(sp_blocking_write(mPort, data.data(), data.size(), 100) == data.size())
         return true;
@@ -113,7 +113,7 @@ bool InkJet::Serial::write(std::vector<uint8_t> &&data)
         return false;
 }
 
-bool InkJet::Serial::writeString(std::string &&data)
+bool inkjet::Serial::writeString(std::string &&data)
 {
     if(sp_blocking_write(mPort, data.data(), data.size(), 100) == data.size())
         return true;
@@ -121,7 +121,7 @@ bool InkJet::Serial::writeString(std::string &&data)
         return false;
 }
 
-std::string InkJet::Serial::blockingReadLine(int timeoutMs)
+std::string inkjet::Serial::blockingReadLine(int timeoutMs)
 {
     std::string res;
     while(true)

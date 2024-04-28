@@ -1,7 +1,7 @@
 #include "inkjet.h"
 #include "portable_file_dialogs/portable_file_dialogs.h"
 
-void InkJet::BeginMainWindow()
+void inkjet::BeginMainWindow()
 {
     ImGuiViewport* viewport = ImGui::GetMainViewport();
     ImGui::SetNextWindowPos(viewport->WorkPos);
@@ -15,12 +15,12 @@ void InkJet::BeginMainWindow()
     ImGui::PopStyleVar(2);
 }
 
-void InkJet::EndMainWindow()
+void inkjet::EndMainWindow()
 {
     ImGui::End();
 }
 
-void InkJet::HLine()
+void inkjet::HLine()
 {
     auto draw_list = ImGui::GetCurrentWindow()->DrawList;
     draw_list->AddLine(
@@ -30,7 +30,7 @@ void InkJet::HLine()
     ImGui::Dummy({0, 1});
 }
 
-void InkJet::VLine()
+void inkjet::VLine()
 {
     auto draw_list = ImGui::GetCurrentWindow()->DrawList;
     draw_list->AddLine(
@@ -40,7 +40,7 @@ void InkJet::VLine()
     ImGui::Dummy({1, 0});
 }
 
-void InkJet::DockSpace(bool leaveSpaceForStatusBar)
+void inkjet::DockSpace(bool leaveSpaceForStatusBar)
 {
     const int padding = 0;
     const int dockSpacing = 1;
@@ -59,7 +59,7 @@ void InkJet::DockSpace(bool leaveSpaceForStatusBar)
     ImGui::PopStyleColor(2);
 }
 
-void InkJet::setStyle()
+void inkjet::setStyle()
 {
     ImGuiStyle* style =  &ImGui::GetStyle();
     ImVec4* colors = style->Colors;
@@ -129,16 +129,17 @@ void InkJet::setStyle()
     style->WindowBorderSize = 0;
     style->WindowRounding = 0;
     style->CellPadding = {8, 8};
+    style->IndentSpacing = 12.0;
 }
 
-bool InkJet::TransparentButton(const char* name, const ImVec2& size)
+bool inkjet::TransparentButton(const char* name, const ImVec2& size)
 {
-    ImGui::PushStyleColor(ImGuiCol_Button, InkJet::colorRGBA(0, 0, 0, 0));
+    ImGui::PushStyleColor(ImGuiCol_Button, inkjet::colorRGBA(0, 0, 0, 0));
     bool ret = ImGui::Button(name);
     ImGui::PopStyleColor();
     return ret;
 }
-void InkJet::Begin(const char* name, bool* open, bool useMenu)
+void inkjet::Begin(const char* name, bool* open, bool usePadding, const std::function<void(void)>& ShowMenu)
 {
     // check tab active
     ImGuiWindow* window = ImGui::FindWindowByName(name);
@@ -165,58 +166,59 @@ void InkJet::Begin(const char* name, bool* open, bool useMenu)
     HLine();
     ImGui::PopStyleVar();
 
-    // push child padding. -1 to compensate for the child window border(which is needed to get child window padding)
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {16-1, 16-1});
-
     // push child window background color to be same as the window background
     ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
 
     // push child border color to be same as the window background
     ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
 
-    // begin window child
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
-    ImGuiWindowFlags childWindowFlags = useMenu ? ImGuiWindowFlags_MenuBar : ImGuiWindowFlags_None;
-    ImGui::BeginChild("windowChild", ImGui::GetContentRegionAvail(), ImGuiChildFlags_None, childWindowFlags);
 
+    ImGui::BeginChild("windowChild", ImGui::GetContentRegionAvail(),
+                      ImGuiChildFlags_None,
+                      (ShowMenu!=NULL) ? ImGuiWindowFlags_MenuBar : ImGuiWindowFlags_None);
 
-    // push child padding. -1 to compensate for the child window border(which is needed to get child window padding)
     ImGui::PopStyleVar();
-
-    //ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {4, 4});
-
-    // push regular border color for the user contents
-    ImGui::PushStyleColor(ImGuiCol_Border, border);
-}
-
-void InkJet::End()
-{
-    // pop regular border color
     ImGui::PopStyleColor();
 
-    // pop frame padding for tab spacing
-    //ImGui::PopStyleVar();
+    if(ShowMenu)
+    {
+        if(ImGui::BeginMenuBar())
+        {
+            ShowMenu();
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0,0});
+            ImGui::EndMenuBar();
+            inkjet::HLine();
+            ImGui::PopStyleVar();
+        }
+    }
+
+    if(usePadding)
+    {
+
+        ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
+        ImGui::BeginChild("paddingChild", ImGui::GetContentRegionAvail(),
+                          ImGuiChildFlags_Border,
+                          ImGuiWindowFlags_None);
+        ImGui::PopStyleColor();
+    }
+}
+
+void inkjet::End(bool usePadding)
+{
+
+   if(usePadding)
+        ImGui::EndChild();
 
     // end child
     ImGui::EndChild();
 
-    // pop child background, border color
-    ImGui::PopStyleColor(2);
-
-    // pop child window padding
-    ImGui::PopStyleVar();
+    ImGui::PopStyleColor(1);
 
     // end window
     ImGui::End();
-
-    // pop window padding for tab border
-    ImGui::PopStyleVar();
-
-    // pop title font
-    //ImGui::PopFont();
 }
 
-void InkJet::initFont()
+void inkjet::initFont()
 {
     auto& io = ImGui::GetIO();
 
@@ -233,21 +235,21 @@ void InkJet::initFont()
     io.Fonts->AddFontFromFileTTF( INKJET_ASSET_PREFIX"assets/fonts/MaterialIcons-Regular.ttf", iconFontSize, &icons_config, icons_ranges );
 }
 
-bool InkJet::InputText(const char *label, const char* hint, char *buf, size_t buf_size, ImGuiInputTextFlags flags)
+bool inkjet::InputText(const char *label, const char* hint, char *buf, size_t buf_size, ImGuiInputTextFlags flags)
 {
     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0);
-    ImGui::PushStyleColor(ImGuiCol_FrameBg, InkJet::white);
+    ImGui::PushStyleColor(ImGuiCol_FrameBg, inkjet::white);
     bool ret = ImGui::InputTextWithHint(label, hint, buf, buf_size, flags);
     ImGui::PopStyleVar();
     ImGui::PopStyleColor();
     return ret;
 }
 
-void InkJet::WidgetMenuBar(const std::function<void()>& Menu, const std::function<void()>& Widget, const float& menuWidth)
+void inkjet::WidgetMenuBar(const std::function<void()>& Menu, const std::function<void()>& Widget, const float& menuWidth)
 {
     // top line to distinguish Windows titlebar
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
-    InkJet::HLine();
+    inkjet::HLine();
     ImGui::PopStyleVar();
 
     // menu child
@@ -269,12 +271,12 @@ void InkJet::WidgetMenuBar(const std::function<void()>& Menu, const std::functio
 
     // utility child end and line
     ImGui::EndChild();
-    InkJet::HLine();
+    inkjet::HLine();
     ImGui::PopStyleVar();
 }
 
 #ifdef INKJET_WITH_IMMVISION
-void InkJet::ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, bool home, bool refresh)
+void inkjet::ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, bool home, bool refresh)
 {
     if(home)
         param = ImmVision::ImageParams();
@@ -301,10 +303,10 @@ void InkJet::ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, b
 }
 #endif
 
-void InkJet::SiglotConnectionGraphView()
+void inkjet::SiglotConnectionGraphView()
 {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, panel);
-    InkJet::Begin(ICON_MD_HUB" Siglot Graph");
+    inkjet::Begin(ICON_MD_HUB" Siglot Graph");
     {
 #ifdef INKJET_WITH_IMMVISION
         static cv::Mat connectionGraphImage = cv::Mat::ones(1000, 1000, CV_8UC1)*255;
@@ -328,7 +330,7 @@ void InkJet::SiglotConnectionGraphView()
                 cv::imwrite(saveFile.result(), connectionGraphImage);
         }
 
-        InkJet::Checkbox("Capture hidden connections",  &showHiddenConnections);
+        inkjet::Checkbox("Capture hidden connections",  &showHiddenConnections);
 
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {12, 0});
         ImGui::SameLine(); ImGui::Dummy({0,0});
@@ -338,11 +340,11 @@ void InkJet::SiglotConnectionGraphView()
 #else
         ImGui::Text("Inkjet was not build with ImmVision. Use \"INKJET_WITH_IMMVISION\" CMake option.");
 #endif
-    }InkJet::End();
+    }inkjet::End();
     ImGui::PopStyleColor();
 }
 
-bool InkJet::Combo(const char *label, int *index, const std::vector<std::string> &items)
+bool inkjet::Combo(const char *label, int *index, const std::vector<std::string> &items)
 {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {16-1, 16-1});
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {8, 8});
@@ -363,10 +365,34 @@ bool InkJet::Combo(const char *label, int *index, const std::vector<std::string>
     return true;
 }
 
-bool InkJet::Checkbox(const char *label, bool* check)
+bool inkjet::Checkbox(const char *label, bool* check)
 {
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {4, 4});
     bool ret = ImGui::Checkbox("Capture hidden connections",  check);
     ImGui::PopStyleVar();
     return ret;
+}
+
+void inkjet::LED(inkjet::LEDColor ledColor)
+{
+    ImColor color;
+    switch (ledColor)
+    {
+        case GREEN:
+            color = ImColor(98,197,84);
+            break;
+        case RED:
+            color = ImColor(237,106,95);
+            break;
+        case YELLOW:
+            color = ImColor(245,191,76);
+            break;
+    }
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+    int width = 8;
+    int height = ImGui::GetFrameHeight();
+
+    draw_list->AddCircleFilled({ImGui::GetCursorScreenPos().x + width/2, ImGui::GetCursorScreenPos().y + height/2},
+                               width/2.0, color);
+    ImGui::Dummy(ImVec2(width, height));
 }

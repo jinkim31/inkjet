@@ -1,4 +1,4 @@
-# InkJet
+# inkjet
 A multi-threaded application framework with an immediate-mode GUI
 
 ## Libraries Included

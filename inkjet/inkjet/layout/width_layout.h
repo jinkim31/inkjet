@@ -3,7 +3,7 @@
 
 #include <imgui_internal.h>
 
-namespace InkJet
+namespace inkjet
 {
 static std::vector<float> widthLayoutWidths;
 static int widthLayoutIndex;

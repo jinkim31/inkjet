@@ -7,16 +7,16 @@ Application::Application()
     this->move(mThread);
 
     HelloImGui::RunnerParams runnerParams;
-    runnerParams.callbacks.SetupImGuiStyle = InkJet::setStyle;
+    runnerParams.callbacks.SetupImGuiStyle = inkjet::setStyle;
     runnerParams.callbacks.ShowGui = [&]{mThread.step(); Render();};
     runnerParams.callbacks.BeforeExit = [&]{
         this->remove();
     };
     runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::NoDefaultWindow;
-    runnerParams.callbacks.LoadAdditionalFonts = InkJet::initFont;
+    runnerParams.callbacks.LoadAdditionalFonts = inkjet::initFont;
     runnerParams.imGuiWindowParams.enableViewports = false;
     runnerParams.fpsIdling.enableIdling = false;
-    runnerParams.appWindowParams.windowTitle = "InkJet";
+    runnerParams.appWindowParams.windowTitle = "inkjet";
     ImmApp::AddOnsParams addOnsParams;
     addOnsParams.withMarkdown = true;
     addOnsParams.withImplot = true;
@@ -32,10 +32,10 @@ Application::~Application()
 void Application::Render()
 {
     // begin main
-    InkJet::BeginMainWindow();
+    inkjet::BeginMainWindow();
 
     // menu bar
-    InkJet::WidgetMenuBar([]{
+    inkjet::WidgetMenuBar([]{
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Create")) {
             }
@@ -56,37 +56,37 @@ void Application::Render()
             ImGui::EndMenu();
         }
     }, []{
-        ImGui::PushStyleColor(ImGuiCol_Text, InkJet::colorRGB(76, 175, 80));
-        InkJet::TransparentButton(ICON_MD_PLAY_ARROW"##UtilityButton"); ImGui::SameLine();
+        ImGui::PushStyleColor(ImGuiCol_Text, inkjet::colorRGB(76, 175, 80));
+        inkjet::TransparentButton(ICON_MD_PLAY_ARROW"##UtilityButton"); ImGui::SameLine();
         ImGui::PopStyleColor();
         char buffer[100] = "";
-        InkJet::InputText("##UtillityText", "Utility Text", buffer, 100); ImGui::SameLine();
+        inkjet::InputText("##UtillityText", "Utility Text", buffer, 100); ImGui::SameLine();
     });
 
     // dockspace
-    InkJet::DockSpace();
+    inkjet::DockSpace();
 
     // status bar
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
-    InkJet::HLine();
+    inkjet::HLine();
     ImGui::BeginChild("StatusBarChild");
-    InkJet::TransparentButton("Status Bar Button");
+    inkjet::TransparentButton("Status Bar Button");
     ImGui::EndChild();
     ImGui::PopStyleVar();
 
     // windows
-    InkJet::SiglotConnectionGraphView();
+    inkjet::SiglotConnectionGraphView();
 
-    InkJet::Begin(ICON_MD_TERMINAL" Terminal");
-    InkJet::End();
+    inkjet::Begin(ICON_MD_TERMINAL" Terminal");
+    inkjet::End();
 
-    InkJet::Begin(ICON_MD_BAR_CHART" Plot");
-    ImGui::PushStyleColor(ImGuiCol_FrameBg, InkJet::white);
+    inkjet::Begin(ICON_MD_BAR_CHART" Plot");
+    ImGui::PushStyleColor(ImGuiCol_FrameBg, inkjet::white);
     if(ImPlot::BeginPlot("Plot", ImGui::GetContentRegionAvail()))
         ImPlot::EndPlot();
     ImGui::PopStyleColor();
-    InkJet::End();
+    inkjet::End();
 
     // end main
-    InkJet::EndMainWindow();
+    inkjet::EndMainWindow();
 }

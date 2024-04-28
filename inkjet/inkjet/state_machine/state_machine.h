@@ -7,7 +7,7 @@
 #include <iostream>
 #include <functional>
 
-namespace InkJet
+namespace inkjet
 {
 struct Transition
 {
@@ -24,16 +24,16 @@ struct Transition
 namespace std
 {
 template<>
-struct std::hash<InkJet::Transition>
+struct std::hash<inkjet::Transition>
 {
-    size_t operator()(const InkJet::Transition &key) const
+    size_t operator()(const inkjet::Transition &key) const
     {
         return key.startState;
     }
 };
 }
 
-namespace InkJet
+namespace inkjet
 {
 class StateMachine
 {
