@@ -2,10 +2,11 @@
 #define NETWIRE_VIEW_UDP_CLIENT_H
 
 #include "socket.h"
-#include <boost/asio.hpp>
-#include <boost/shared_ptr.hpp>
-
-using namespace boost::asio;
+#include <Poco/Net/Net.h>
+#include <Poco/Net/StreamSocket.h>
+#include <Poco/Net/SocketAddress.h>
+#include <Poco/Net/DatagramSocket.h>
+#include <Poco/Timespan.h>
 
 namespace inkjet
 {
@@ -15,15 +16,19 @@ class UDPClient : public Socket
 
 public:
     UDPClient();
-    bool open() override;
-    bool close() override;
-    bool write(std::vector<uint8_t> &&data) override;
-    bool writeString(std::string &&data) override;
-    void SIGNAL_ReadReady(std::vector<uint8_t> &&data) override;
-    void SIGNAL_ReadLineReady(std::string &&data) override;
+    bool open(const std::string&& ipString, unsigned short&& port);
+    bool close();
+    void write(std::string&& data);
+    void write(std::vector<uint8_t>&& data);
+    std::vector<uint8_t> read();
+    size_t available();
+    SIGNAL SIGNAL_available(){};
 protected:
     void SLOT_observerCallback() override;
 private:
+    Poco::Net::DatagramSocket mSocket;
+    std::vector<uint8_t> mReadBuffer;
+    size_t poll();
 };
 
 }

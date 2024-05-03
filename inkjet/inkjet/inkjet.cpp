@@ -109,10 +109,10 @@ void inkjet::setStyle()
     colors[ImGuiCol_PlotLinesHovered]       = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
     colors[ImGuiCol_PlotHistogram]          = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
     colors[ImGuiCol_PlotHistogramHovered]   = ImVec4(1.00f, 0.45f, 0.00f, 1.00f);
-    colors[ImGuiCol_TableHeaderBg]          = panel;
+    colors[ImGuiCol_TableHeaderBg]          = colorRGB(229, 232, 237);
     colors[ImGuiCol_TableBorderStrong]      = border;
     colors[ImGuiCol_TableBorderLight]       = border;
-    colors[ImGuiCol_TableRowBg]             = white;
+    colors[ImGuiCol_TableRowBg]             = panel;
     colors[ImGuiCol_TableRowBgAlt]          = panel;
     colors[ImGuiCol_TextSelectedBg]         = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
     colors[ImGuiCol_DragDropTarget]         = ImVec4(0.26f, 0.59f, 0.98f, 0.95f);
@@ -122,33 +122,37 @@ void inkjet::setStyle()
     colors[ImGuiCol_ModalWindowDimBg]       = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
 
     style->WindowMenuButtonPosition = ImGuiDir_Right;
-    style->WindowPadding = {16, 8};
+    style->WindowPadding = {12, 12};
     style->FramePadding = {8, 8};
     style->ItemSpacing = {12, 12};
     style->ItemInnerSpacing = {4, 4};
     style->WindowBorderSize = 0;
     style->WindowRounding = 0;
-    style->CellPadding = {8, 8};
+    style->CellPadding = {0, 0};
     style->IndentSpacing = 12.0;
+    style->TabRounding = 0.0;
+    style->ChildRounding = 0.0;
+    style->WindowMinSize = {100, 100};
+    style->FrameRounding = 0;
 }
 
 bool inkjet::TransparentButton(const char* name, const ImVec2& size)
 {
     ImGui::PushStyleColor(ImGuiCol_Button, inkjet::colorRGBA(0, 0, 0, 0));
-    bool ret = ImGui::Button(name);
+    bool ret = ImGui::Button(name, size);
     ImGui::PopStyleColor();
     return ret;
 }
-void inkjet::Begin(const char* name, bool* open, bool usePadding, const std::function<void(void)>& ShowMenu)
+bool inkjet::Begin(const char* name, bool* open, bool usePadding, const std::function<void(void)>& ShowMenu)
 {
+    // returns true if focused
+
     // check tab active
     ImGuiWindow* window = ImGui::FindWindowByName(name);
     bool isActive = window != nullptr && !window->Hidden;
 
-    // check tab hover
+    // apply tab hover color
     bool isHovering = window != nullptr && ImGui::IsMouseHoveringRect(window->DockTabItemRect.Min, window->DockTabItemRect.Max);
-
-
     ImGui::PushStyleColor(ImGuiCol_Text, isActive ? highlight : (isHovering ? ImGui::GetStyleColorVec4(ImGuiCol_Text) : textSubtitle));
 
     // zero window padding for tab border
@@ -162,9 +166,11 @@ void inkjet::Begin(const char* name, bool* open, bool usePadding, const std::fun
     ImGui::PopStyleColor();
 
     // tab border without spacing below
+    //ImGui::PushStyleColor(ImGuiCol_Border, ImGui::IsWindowFocused() ? highlight : border);
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0,0});
     HLine();
     ImGui::PopStyleVar();
+    //ImGui::PopStyleColor();
 
     // push child window background color to be same as the window background
     ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
@@ -172,10 +178,9 @@ void inkjet::Begin(const char* name, bool* open, bool usePadding, const std::fun
     // push child border color to be same as the window background
     ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
 
-
     ImGui::BeginChild("windowChild", ImGui::GetContentRegionAvail(),
                       ImGuiChildFlags_None,
-                      (ShowMenu!=NULL) ? ImGuiWindowFlags_MenuBar : ImGuiWindowFlags_None);
+                       (ShowMenu!=NULL) ? ImGuiWindowFlags_MenuBar : ImGuiWindowFlags_None);
 
     ImGui::PopStyleVar();
     ImGui::PopStyleColor();
@@ -198,16 +203,21 @@ void inkjet::Begin(const char* name, bool* open, bool usePadding, const std::fun
         ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
         ImGui::BeginChild("paddingChild", ImGui::GetContentRegionAvail(),
                           ImGuiChildFlags_Border,
-                          ImGuiWindowFlags_None);
+                           ImGuiWindowFlags_None);
         ImGui::PopStyleColor();
     }
+    else
+    {
+        ImGui::BeginChild("paddingChild", ImGui::GetContentRegionAvail(),
+                          ImGuiWindowFlags_None);
+    }
+
+    return ImGui::IsWindowFocused();
 }
 
-void inkjet::End(bool usePadding)
+void inkjet::End()
 {
-
-   if(usePadding)
-        ImGui::EndChild();
+    ImGui::EndChild();
 
     // end child
     ImGui::EndChild();
@@ -349,7 +359,7 @@ bool inkjet::Combo(const char *label, int *index, const std::vector<std::string>
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {16-1, 16-1});
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {8, 8});
     const char* preview = (*index < items.size()) ? items[*index].c_str() : "";
-    if (ImGui::BeginCombo(label, preview, ImGuiComboFlags_NoArrowButton))
+    if (ImGui::BeginCombo(label, preview, ImGuiComboFlags_None))
     {
         for (int n = 0; n < items.size(); n++)
         {
@@ -373,7 +383,7 @@ bool inkjet::Checkbox(const char *label, bool* check)
     return ret;
 }
 
-void inkjet::LED(inkjet::LEDColor ledColor)
+void inkjet::LED(inkjet::LEDColor ledColor, const ImVec2 &size)
 {
     ImColor color;
     switch (ledColor)
@@ -395,4 +405,62 @@ void inkjet::LED(inkjet::LEDColor ledColor)
     draw_list->AddCircleFilled({ImGui::GetCursorScreenPos().x + width/2, ImGui::GetCursorScreenPos().y + height/2},
                                width/2.0, color);
     ImGui::Dummy(ImVec2(width, height));
+}
+
+bool inkjet::ButtonText(const char *text,  const ImVec2& size)
+{
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorRGBA(0, 0, 0, 0));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorRGBA(0, 0, 0, 0));
+    bool ret = inkjet::TransparentButton(text, size);
+    ImGui::PopStyleColor(2);
+    return ret;
+}
+
+struct InputTextCallback_UserData
+{
+    std::string*            Str;
+    ImGuiInputTextCallback  ChainCallback;
+    void*                   ChainCallbackUserData;
+};
+
+static int InputTextCallback(ImGuiInputTextCallbackData* data)
+{
+    InputTextCallback_UserData* user_data = (InputTextCallback_UserData*)data->UserData;
+    if (data->EventFlag == ImGuiInputTextFlags_CallbackResize)
+    {
+        // Resize string callback
+        // If for some reason we refuse the new length (BufTextLen) and/or capacity (BufSize) we need to set them back to what we want.
+        std::string* str = user_data->Str;
+        IM_ASSERT(data->Buf == str->c_str());
+        str->resize(data->BufTextLen);
+        data->Buf = (char*)str->c_str();
+    }
+    else if (user_data->ChainCallback)
+    {
+        // Forward to user callback, if any
+        data->UserData = user_data->ChainCallbackUserData;
+        return user_data->ChainCallback(data);
+    }
+    return 0;
+}
+
+bool inkjet::InputTextStdString(const char *label, std::string *str, ImGuiInputTextFlags flags,
+                                ImGuiInputTextCallback callback, void *user_data)
+{
+    IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
+    flags |= ImGuiInputTextFlags_CallbackResize;
+
+    InputTextCallback_UserData cb_user_data;
+    cb_user_data.Str = str;
+    cb_user_data.ChainCallback = callback;
+    cb_user_data.ChainCallbackUserData = user_data;
+    return ImGui::InputText(label, (char*)str->c_str(), str->capacity() + 1, flags, InputTextCallback, &cb_user_data);
+}
+
+void inkjet::TableLabel(const char *text)
+{
+    //ImGui::Dummy(ImGui::GetStyle().ItemSpacing); ImGui::SameLine();
+    ImGui::AlignTextToFramePadding();
+    ImGui::Text("%s", text); ImGui::SameLine();
+    //ImGui::Dummy(ImGui::GetStyle().ItemSpacing);
 }

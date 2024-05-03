@@ -28,13 +28,14 @@
 
 namespace inkjet
 {
+
 static ImVec4 colorRGB(uint8_t r, uint8_t g, uint8_t b){ return {r/255.0f, g/255.0f, b/255.0f, 1.0f}; }
 static ImVec4 colorRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a){ return {r/255.0f, g/255.0f, b/255.0f, a/255.0f}; }
 static const ImVec4 white = colorRGB(255, 255, 255);
 static const ImVec4 background = colorRGB(250, 250, 250);
 static const ImVec4 panel = colorRGB(242, 242, 242);
 static const ImVec4 highlight = colorRGB(41, 98, 255);
-static const ImVec4 textSubtitle = colorRGB(85, 85, 85);
+static const ImVec4 textSubtitle = colorRGB(105, 105, 105);
 static const ImVec4 border = colorRGB(211, 211, 211);
 static std::map<std::string, ImFont*> fonts;
 
@@ -46,9 +47,9 @@ void DockSpace(bool leaveSpaceForStatusBar = true);
 
 void setStyle();
 
-void Begin(const char* name, bool* open=NULL, bool usePadding=true, const std::function<void(void)>& ShowMenu=NULL);
+bool Begin(const char* name, bool* open=NULL, bool usePadding=true, const std::function<void(void)>& ShowMenu=NULL);
 
-void End(bool usePadding=true);
+void End();
 
 void initFont();
 
@@ -62,6 +63,7 @@ void HLine();
 
 void VLine();
 
+void TableLabel(const char* text);
 #ifdef INKJET_WITH_IMMVISION
 void ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, bool home, bool refresh);
 #endif
@@ -79,7 +81,10 @@ enum LEDColor
     YELLOW,
     OFF,
 };
-void LED(LEDColor ledColor);
+void LED(inkjet::LEDColor ledColor, const ImVec2 &size);
 
+bool ButtonText(const char* text, const ImVec2& size);
+
+bool InputTextStdString(const char* label, std::string* str, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* user_data);
 };
 #endif
