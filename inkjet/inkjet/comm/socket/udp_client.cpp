@@ -53,6 +53,16 @@ std::vector<uint8_t> inkjet::UDPClient::read()
     return readBufferCopied;
 }
 
+size_t inkjet::UDPClient::readMem(uint8_t* buffer, const size_t& bufferSize)
+{
+    if (mSocket.available())
+    {
+        size_t n = mSocket.receiveBytes(buffer, bufferSize);
+        return n;
+    }
+    return 0;
+}
+
 size_t inkjet::UDPClient::poll()
 {
     try

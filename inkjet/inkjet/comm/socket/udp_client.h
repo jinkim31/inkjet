@@ -21,6 +21,7 @@ public:
     void write(std::string&& data);
     void write(std::vector<uint8_t>&& data);
     std::vector<uint8_t> read();
+    size_t readMem(uint8_t* buffer, const size_t& bufferSize);
     size_t available();
     SIGNAL SIGNAL_available(){};
 protected:

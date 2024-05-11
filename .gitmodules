@@ -10,3 +10,6 @@
 [submodule "external/poco"]
 	path = external/poco
 	url = https://github.com/pocoproject/poco.git
+[submodule "external/serial"]
+	path = external/serial
+	url = https://github.com/jinkim31/serial.git

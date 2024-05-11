@@ -19,6 +19,7 @@ set(IMGUI_BUNDLE_BUILD_PYTHON OFF)
 add_subdirectory(external/imgui_bundle)
 add_subdirectory(external/siglot)
 add_subdirectory(external/poco)
+add_subdirectory(external/serial)
 
 # inkjet library
 add_library(inkjet STATIC
@@ -32,26 +33,18 @@ add_library(inkjet STATIC
 )
 
 # link libraries
-IF (WIN32)
-    list(APPEND CMAKE_PREFIX_PATH "external/libserialport/win_x86-64_msvc")
-    find_library(libserialport REQUIRED NAMES libserialport.lib)
-ELSEIF(APPLE)
-    list(APPEND CMAKE_PREFIX_PATH "external/libserialport/apple_arm64")
-    find_library(libserialport REQUIRED NAMES libserialport.dylib)
-ELSE(UNIX)
-    list(APPEND CMAKE_PREFIX_PATH "external/libserialport/linux_x86-64")
-    find_library(libserialport REQUIRED NAMES libserialport.a)
-ENDIF()
 target_link_libraries(inkjet PRIVATE ${libserialport})
 target_link_libraries(inkjet PUBLIC  siglot imgui_bundle)
 target_link_libraries(inkjet PRIVATE Poco::Net)
+target_link_libraries(inkjet PRIVATE serial)
 
 # inkjet include directories
 target_include_directories(inkjet PUBLIC inkjet)
-target_include_directories(inkjet PUBLIC  external/siglot)
+target_include_directories(inkjet PUBLIC external/siglot)
 target_include_directories(inkjet PUBLIC external/libserialport)
 target_include_directories(inkjet PUBLIC external/poco/Net/include)
 target_include_directories(inkjet PUBLIC external/poco/Foundation/include)
+target_include_directories(inkjet PUBLIC external/serial/include)
 
 # example executable
 imgui_bundle_add_app(inkjet_example

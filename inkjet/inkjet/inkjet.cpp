@@ -67,12 +67,12 @@ void inkjet::setStyle()
 
     colors[ImGuiCol_Text]                   = colorRGB(34, 34, 34);
     colors[ImGuiCol_TextDisabled]           = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
-    colors[ImGuiCol_WindowBg]               = white;
+    colors[ImGuiCol_WindowBg]               = panel;
     colors[ImGuiCol_ChildBg]                = panel;
-    colors[ImGuiCol_PopupBg]                = ImVec4(1.00f, 1.00f, 1.00f, 0.98f);
+    colors[ImGuiCol_PopupBg]                = panel;
     colors[ImGuiCol_Border]                 = border;
     colors[ImGuiCol_BorderShadow]           = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-    colors[ImGuiCol_FrameBg]                = colorRGBA(220, 220, 220, 70);
+    colors[ImGuiCol_FrameBg]                = white;
     colors[ImGuiCol_FrameBgHovered]         = colorRGBA(220, 220, 220, 120);
     colors[ImGuiCol_FrameBgActive]          = colorRGBA(220, 220, 220, 170);
     colors[ImGuiCol_TitleBg]                = panel;
@@ -86,7 +86,7 @@ void inkjet::setStyle()
     colors[ImGuiCol_CheckMark]              = colorRGB(34, 34, 34);
     colors[ImGuiCol_SliderGrab]             = colorRGB(170, 170, 170);
     colors[ImGuiCol_SliderGrabActive]       = highlight;
-    colors[ImGuiCol_Button]                 = colorRGBA(220, 220, 220, 70);
+    colors[ImGuiCol_Button]                 = colorRGBA(210, 210, 210, 70);
     colors[ImGuiCol_ButtonHovered]          = colorRGBA(220, 220, 220, 120);
     colors[ImGuiCol_ButtonActive]           = colorRGBA(220, 220, 220, 170);
     colors[ImGuiCol_Header]                 = colorRGBA(220, 220, 220, 70);
@@ -112,8 +112,8 @@ void inkjet::setStyle()
     colors[ImGuiCol_TableHeaderBg]          = colorRGB(229, 232, 237);
     colors[ImGuiCol_TableBorderStrong]      = border;
     colors[ImGuiCol_TableBorderLight]       = border;
-    colors[ImGuiCol_TableRowBg]             = panel;
-    colors[ImGuiCol_TableRowBgAlt]          = panel;
+    colors[ImGuiCol_TableRowBg]             = white;
+    colors[ImGuiCol_TableRowBgAlt]          = colorRGB(248, 248, 248);
     colors[ImGuiCol_TextSelectedBg]         = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
     colors[ImGuiCol_DragDropTarget]         = ImVec4(0.26f, 0.59f, 0.98f, 0.95f);
     colors[ImGuiCol_NavHighlight]           = colors[ImGuiCol_HeaderHovered];
@@ -134,6 +134,10 @@ void inkjet::setStyle()
     style->ChildRounding = 0.0;
     style->WindowMinSize = {100, 100};
     style->FrameRounding = 0;
+
+    ImPlot::GetStyle().Colors[ImPlotCol_PlotBg] = white;
+    ImPlot::GetStyle().Colors[ImPlotCol_FrameBg] = colorRGBA(0,0,0,0);
+    ImPlot::GetStyle().PlotPadding = {0, 0};
 }
 
 bool inkjet::TransparentButton(const char* name, const ImVec2& size)
@@ -340,7 +344,7 @@ void inkjet::SiglotConnectionGraphView()
                 cv::imwrite(saveFile.result(), connectionGraphImage);
         }
 
-        inkjet::Checkbox("Capture hidden connections",  &showHiddenConnections);
+        inkjet::CheckBox("Capture hidden connections",  &showHiddenConnections);
 
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {12, 0});
         ImGui::SameLine(); ImGui::Dummy({0,0});
@@ -373,14 +377,6 @@ bool inkjet::Combo(const char *label, int *index, const std::vector<std::string>
     }
     ImGui::PopStyleVar(2);
     return true;
-}
-
-bool inkjet::Checkbox(const char *label, bool* check)
-{
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {4, 4});
-    bool ret = ImGui::Checkbox("Capture hidden connections",  check);
-    ImGui::PopStyleVar();
-    return ret;
 }
 
 void inkjet::LED(inkjet::LEDColor ledColor, const ImVec2 &size)
@@ -463,4 +459,16 @@ void inkjet::TableLabel(const char *text)
     ImGui::AlignTextToFramePadding();
     ImGui::Text("%s", text); ImGui::SameLine();
     //ImGui::Dummy(ImGui::GetStyle().ItemSpacing);
+}
+
+bool inkjet::CheckBox(char *text, bool *value)
+{
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {4,4});
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, {0, 0});
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1);
+    ImGui::SetCursorPosY(4);
+    //ImGui::Dummy({16, 16});
+    bool ret = ImGui::Checkbox(text, value);
+    ImGui::PopStyleVar(3);
+    return ret;
 }

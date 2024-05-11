@@ -70,8 +70,6 @@ void ImageView(char* name, cv::Mat mat, ImmVision::ImageParams& param, bool home
 
 bool Combo(const char* label, int* index, const std::vector<std::string>& items);
 
-bool Checkbox(const char* label, bool* check);
-
 void SiglotConnectionGraphView();
 
 enum LEDColor
@@ -86,5 +84,7 @@ void LED(inkjet::LEDColor ledColor, const ImVec2 &size);
 bool ButtonText(const char* text, const ImVec2& size);
 
 bool InputTextStdString(const char* label, std::string* str, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* user_data);
+
+bool CheckBox(char* text, bool* value);
 };
 #endif
