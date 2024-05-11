@@ -2,6 +2,7 @@
 #define INKJET_WIDTH_LAYOUT
 
 #include <imgui_internal.h>
+#include <vector>
 
 namespace inkjet
 {

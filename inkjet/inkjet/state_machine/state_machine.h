@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <iostream>
 #include <functional>
+#include <optional>
 
 namespace inkjet
 {
@@ -24,7 +25,7 @@ struct Transition
 namespace std
 {
 template<>
-struct std::hash<inkjet::Transition>
+struct hash<inkjet::Transition>
 {
     size_t operator()(const inkjet::Transition &key) const
     {

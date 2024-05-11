@@ -38,8 +38,9 @@ bool inkjet::Serial::open()
     mPort.setParity(serial::parity_none);
     mPort.setStopbits(serial::stopbits_one);
     mPort.setFlowcontrol(serial::flowcontrol_none);
+    mPort.setTimeout(1,0,0,0,0);
     mPort.open();
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(0));
     mPort.flush();
     return mPort.isOpen();
 }
