@@ -2,7 +2,7 @@
 
 inkjet::Serial::Serial()
 {
-    setName("serial");
+    setSiglotObjectName("serial");
 }
 
 inkjet::Serial::~Serial()
