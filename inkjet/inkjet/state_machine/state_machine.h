@@ -44,6 +44,7 @@ public:
     {
         mName = "unnamed state machine";
         mVerbose = false;
+        mStateChangedCallback = nullptr;
     }
 
     void setVerbose(bool verbose)
@@ -82,6 +83,8 @@ public:
         t.startState = mCurrentState;
         t.event = event;
         const auto &iter = mTransitions.find(t);
+
+        // destination state not found
         if (iter == mTransitions.end())
         {
             if(mVerbose)
@@ -93,6 +96,7 @@ public:
             return;
         }
 
+        // found
         if(mVerbose)
             std::cout<<mName<<": "
                      <<getNameFromMap(mStateNameMap, mCurrentState)
@@ -103,9 +107,13 @@ public:
                      <<std::endl;
 
         const auto& handler = iter->second.second;
+        mCurrentState = iter->second.first;
+
         if(handler)
             handler();
-        mCurrentState = iter->second.first;
+
+        if(mStateChangedCallback)
+            mStateChangedCallback();
 
         if(mReservedEvent.has_value())
         {
@@ -118,6 +126,11 @@ public:
     void reserveEvent(int event)
     {
         mReservedEvent = event;
+    }
+
+    void setStateChangedCallback(const std::function<void()>& functor)
+    {
+        mStateChangedCallback = functor;
     }
 
 private:
@@ -134,6 +147,7 @@ private:
     bool mVerbose;
     std::string mName;
     std::optional<int> mReservedEvent;
+    std::function<void()> mStateChangedCallback;
     std::unordered_map<int, std::string> mStateNameMap, mEventNameMap;
     std::unordered_map<Transition, std::pair<int, std::function<void(void)>>> mTransitions;
 };

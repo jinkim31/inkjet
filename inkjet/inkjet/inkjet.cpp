@@ -10,7 +10,9 @@ void inkjet::BeginMainWindow()
     ImGui::PushStyleColor(ImGuiCol_WindowBg, background);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
-    ImGui::Begin("MAIN", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBringToFrontOnFocus);
+    ImGui::Begin("MAIN", NULL,
+                 ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize
+                 | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBringToFrontOnFocus);
     ImGui::PopStyleColor(1);
     ImGui::PopStyleVar(2);
 }
