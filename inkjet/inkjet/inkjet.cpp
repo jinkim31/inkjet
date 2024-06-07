@@ -56,7 +56,7 @@ void inkjet::DockSpace(bool leaveSpaceForStatusBar)
     ImGui::SameLine();
     ImGui::DockSpace(ImGui::GetID("MainDockSpace"),
                      ImVec2(-padding, -padding - (leaveSpaceForStatusBar ? ImGui::GetFrameHeight()+1 : 0)),
-                     ImGuiDockNodeFlags_PassthruCentralNode|ImGuiDockNodeFlags_NoCloseButton);
+                     ImGuiDockNodeFlags_PassthruCentralNode|ImGuiDockNodeFlags_NoCloseButton|ImGuiDockNodeFlags_NoWindowMenuButton);
     ImGui::PopStyleVar(3);
     ImGui::PopStyleColor(2);
 }

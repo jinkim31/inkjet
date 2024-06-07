@@ -83,7 +83,8 @@ void LED(inkjet::LEDColor ledColor, const ImVec2 &size);
 
 bool ButtonText(const char* text, const ImVec2& size);
 
-bool InputTextStdString(const char* label, std::string* str, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* user_data);
+bool InputTextStdString(const char* label, std::string* str, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None,
+                        ImGuiInputTextCallback callback=NULL, void* user_data=NULL);
 
 bool CheckBox(char* text, bool* value);
 };
