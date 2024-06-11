@@ -22,12 +22,12 @@ void inkjet::EndMainWindow()
     ImGui::End();
 }
 
-void inkjet::HLine()
+void inkjet::HLine(float margin)
 {
     auto draw_list = ImGui::GetCurrentWindow()->DrawList;
     draw_list->AddLine(
-            ImGui::GetCursorScreenPos(),
-            ImGui::GetCursorScreenPos() + ImVec2(ImGui::GetContentRegionAvail().x, 0),
+            ImGui::GetCursorScreenPos() + ImVec2{margin, 0},
+            ImGui::GetCursorScreenPos() + ImVec2(ImGui::GetContentRegionAvail().x-margin, 0),
             ImGui::GetColorU32(ImGuiCol_Border));
     ImGui::Dummy({0, 1});
 }
@@ -36,8 +36,8 @@ void inkjet::VLine()
 {
     auto draw_list = ImGui::GetCurrentWindow()->DrawList;
     draw_list->AddLine(
-            ImGui::GetCursorScreenPos(),
-            ImGui::GetCursorScreenPos() + ImVec2(0, ImGui::GetFrameHeight()),
+            ImGui::GetCursorScreenPos() + ImVec2(0, 4),
+            ImGui::GetCursorScreenPos() + ImVec2(0, ImGui::GetFrameHeight()-4),
             ImGui::GetColorU32(ImGuiCol_Border));
     ImGui::Dummy({1, 0});
 }
@@ -131,7 +131,7 @@ void inkjet::setStyle()
     style->WindowBorderSize = 0;
     style->WindowRounding = 0;
     style->CellPadding = {0, 0};
-    style->IndentSpacing = 12.0;
+    style->IndentSpacing = 16.0;
     style->TabRounding = 0.0;
     style->ChildRounding = 0.0;
     style->WindowMinSize = {100, 100};

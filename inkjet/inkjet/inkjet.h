@@ -59,7 +59,7 @@ void WidgetMenuBar(const std::function<void()>& Menu, const std::function<void()
 
 bool TransparentButton(const char* name, const ImVec2& size=ImVec2(0, 0));
 
-void HLine();
+void HLine(float margin=0.0);
 
 void VLine();
 
