@@ -37,6 +37,9 @@ static const ImVec4 panel = colorRGB(242, 242, 242);
 static const ImVec4 highlight = colorRGB(41, 98, 255);
 static const ImVec4 textSubtitle = colorRGB(105, 105, 105);
 static const ImVec4 border = colorRGB(211, 211, 211);
+static const ImVec4 green = ImColor(98,197,84);
+static const ImVec4 red = ImColor(237,106,95);
+static const ImVec4 yellow = ImColor(245,191,76);
 static std::map<std::string, ImFont*> fonts;
 
 void BeginMainWindow();
@@ -83,7 +86,7 @@ void LED(inkjet::LEDColor ledColor, const ImVec2 &size);
 
 bool ButtonText(const char* text, const ImVec2& size);
 
-bool InputTextStdString(const char* label, std::string* str, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None,
+bool InputTextStdString(const char* label, std::string* str, const std::string& hint="", ImGuiInputTextFlags flags=ImGuiInputTextFlags_None,
                         ImGuiInputTextCallback callback=NULL, void* user_data=NULL);
 
 bool CheckBox(char* text, bool* value);
