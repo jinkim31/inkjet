@@ -140,6 +140,7 @@ void inkjet::setStyle()
     ImPlot::GetStyle().Colors[ImPlotCol_PlotBg] = white;
     ImPlot::GetStyle().Colors[ImPlotCol_FrameBg] = colorRGBA(0,0,0,0);
     ImPlot::GetStyle().PlotPadding = {0, 0};
+    ImPlot::GetStyle().UseLocalTime = true;
 }
 
 bool inkjet::TransparentButton(const char* name, const ImVec2& size)
