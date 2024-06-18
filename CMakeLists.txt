@@ -38,7 +38,7 @@ target_link_libraries(inkjet PRIVATE ${libserialport})
 target_link_libraries(inkjet PUBLIC  siglot imgui_bundle)
 target_link_libraries(inkjet PRIVATE Poco::Net)
 target_link_libraries(inkjet PRIVATE serial)
-target_link_libraries(inkjet PRIVATE sync)
+target_link_libraries(inkjet PUBLIC sync)
 
 # inkjet include directories
 target_include_directories(inkjet PUBLIC inkjet)
@@ -47,6 +47,7 @@ target_include_directories(inkjet PUBLIC external/libserialport)
 target_include_directories(inkjet PUBLIC external/poco/Net/include)
 target_include_directories(inkjet PUBLIC external/poco/Foundation/include)
 target_include_directories(inkjet PUBLIC external/serial/include)
+target_include_directories(inkjet PUBLIC external/sync/src)
 
 # example executable
 imgui_bundle_add_app(inkjet_example
