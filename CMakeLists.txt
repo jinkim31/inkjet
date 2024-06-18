@@ -20,6 +20,7 @@ add_subdirectory(external/imgui_bundle)
 add_subdirectory(external/siglot)
 add_subdirectory(external/poco)
 add_subdirectory(external/serial)
+add_subdirectory(external/sync)
 
 # inkjet library
 add_library(inkjet STATIC
@@ -37,6 +38,7 @@ target_link_libraries(inkjet PRIVATE ${libserialport})
 target_link_libraries(inkjet PUBLIC  siglot imgui_bundle)
 target_link_libraries(inkjet PRIVATE Poco::Net)
 target_link_libraries(inkjet PRIVATE serial)
+target_link_libraries(inkjet PRIVATE sync)
 
 # inkjet include directories
 target_include_directories(inkjet PUBLIC inkjet)
