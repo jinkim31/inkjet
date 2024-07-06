@@ -88,6 +88,8 @@ bool ButtonText(const char* text, const ImVec2& size);
 
 bool InputTextStdString(const char* label, std::string* str, const std::string& hint="", ImGuiInputTextFlags flags=ImGuiInputTextFlags_None,
                         ImGuiInputTextCallback callback=NULL, void* user_data=NULL);
+bool InputTextMultiLineStdString(const char* label, std::string* str, const ImVec2& size, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None,
+                        ImGuiInputTextCallback callback=NULL, void* user_data=NULL);
 
 bool CheckBox(char* text, bool* value);
 };

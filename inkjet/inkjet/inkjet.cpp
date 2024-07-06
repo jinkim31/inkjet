@@ -457,6 +457,19 @@ bool inkjet::InputTextStdString(const char *label, std::string *str, const std::
     return ImGui::InputTextWithHint(label, (char*)hint.c_str(), (char*)str->c_str(), str->capacity() + 1, flags, InputTextCallback, &cb_user_data);
 }
 
+bool inkjet::InputTextMultiLineStdString(const char *label, std::string *str, const ImVec2& size,
+                                         ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void *user_data)
+{
+    IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
+    flags |= ImGuiInputTextFlags_CallbackResize;
+
+    InputTextCallback_UserData cb_user_data;
+    cb_user_data.Str = str;
+    cb_user_data.ChainCallback = callback;
+    cb_user_data.ChainCallbackUserData = user_data;
+    return ImGui::InputTextMultiline(label, (char*)str->c_str(), str->capacity() + 1, size, flags, InputTextCallback, &cb_user_data);
+}
+
 void inkjet::TableLabel(const char *text)
 {
     //ImGui::Dummy(ImGui::GetStyle().ItemSpacing); ImGui::SameLine();
@@ -476,3 +489,4 @@ bool inkjet::CheckBox(char *text, bool *value)
     ImGui::PopStyleVar(3);
     return ret;
 }
+
