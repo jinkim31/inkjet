@@ -128,7 +128,7 @@ void inkjet::setStyle()
     style->FramePadding = {8, 8};
     style->ItemSpacing = {12, 12};
     style->ItemInnerSpacing = {4, 4};
-    style->WindowBorderSize = 0;
+    style->WindowBorderSize = 1;
     style->WindowRounding = 0;
     style->CellPadding = {0, 0};
     style->IndentSpacing = 16.0;
@@ -163,10 +163,10 @@ bool inkjet::Begin(const char* name, bool* open, bool usePadding, const std::fun
     ImGui::PushStyleColor(ImGuiCol_Text, isActive ? highlight : (isHovering ? ImGui::GetStyleColorVec4(ImGuiCol_Text) : textSubtitle));
 
     // zero window padding for tab border
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {1, 1});
 
     // begin window
-    ImGuiWindowFlags flags =  ImGuiWindowFlags_None | ImGuiWindowFlags_NoScrollbar | ImGuiNextWindowDataFlags_HasScroll;
+    ImGuiWindowFlags flags =   ImGuiWindowFlags_NoScrollbar;
     ImGui::Begin(name, open, flags);
 
     // pop inactive title color
@@ -183,7 +183,7 @@ bool inkjet::Begin(const char* name, bool* open, bool usePadding, const std::fun
     ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
 
     // push child border color to be same as the window background
-    ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
+    ImGui::PushStyleColor(ImGuiCol_Border, green);
 
     ImGui::BeginChild("windowChild", ImGui::GetContentRegionAvail(),
                       ImGuiChildFlags_None,
