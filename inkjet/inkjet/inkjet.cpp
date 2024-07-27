@@ -158,39 +158,38 @@ bool inkjet::Begin(const char* name, bool* open, bool usePadding, const std::fun
     ImGuiWindow* window = ImGui::FindWindowByName(name);
     bool isActive = window != nullptr && !window->Hidden;
 
+    // background color
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, panel);
+
     // apply tab hover color
     bool isHovering = window != nullptr && ImGui::IsMouseHoveringRect(window->DockTabItemRect.Min, window->DockTabItemRect.Max);
     ImGui::PushStyleColor(ImGuiCol_Text, isActive ? highlight : (isHovering ? ImGui::GetStyleColorVec4(ImGuiCol_Text) : textSubtitle));
 
     // zero window padding for tab border
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {1, 1});
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
 
     // begin window
     ImGuiWindowFlags flags =   ImGuiWindowFlags_NoScrollbar;
     ImGui::Begin(name, open, flags);
 
-    // pop inactive title color
+    // pop title color
     ImGui::PopStyleColor();
 
     // tab border without spacing below
-    //ImGui::PushStyleColor(ImGuiCol_Border, ImGui::IsWindowFocused() ? highlight : border);
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0,0});
     HLine();
     ImGui::PopStyleVar();
-    //ImGui::PopStyleColor();
+
+    ImGui::PopStyleColor();
 
     // push child window background color to be same as the window background
     ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
-
-    // push child border color to be same as the window background
-    ImGui::PushStyleColor(ImGuiCol_Border, green);
 
     ImGui::BeginChild("windowChild", ImGui::GetContentRegionAvail(),
                       ImGuiChildFlags_None,
                        (ShowMenu!=NULL) ? ImGuiWindowFlags_MenuBar : ImGuiWindowFlags_None);
 
     ImGui::PopStyleVar();
-    ImGui::PopStyleColor();
 
     if(ShowMenu)
     {
@@ -216,6 +215,7 @@ bool inkjet::Begin(const char* name, bool* open, bool usePadding, const std::fun
     else
     {
         ImGui::BeginChild("paddingChild", ImGui::GetContentRegionAvail(),
+                          ImGuiChildFlags_None,
                           ImGuiWindowFlags_None);
     }
 

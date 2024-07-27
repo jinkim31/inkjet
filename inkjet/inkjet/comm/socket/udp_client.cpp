@@ -28,10 +28,12 @@ bool inkjet::UDPClient::close()
 void inkjet::UDPClient::write(std::string &&data)
 {
     try{
-        mSocket.sendBytes(data.data(), data.length());
+        size_t nSent = mSocket.sendBytes(data.data(), data.length());
+        if(nSent != data.length())
+            std::cerr<<"could not write all"<<std::endl;
     }catch(Poco::Net::NetException e)
     {
-        std::cerr<<"UDPClient write() failed";
+        std::cerr<<"UDPClient write() failed: "<<e.what()<<std::endl;
     }
 }
 
